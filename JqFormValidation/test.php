@@ -187,7 +187,7 @@ class MyOwnDependencyRuleWithComplexProcess extends Dependency{
     }
     public function __toJavascript(){
 $str = <<<'EOD'
-function(){return false==true;}
+function(){return false == true;}
 EOD;
         return "'".$this->accessor->data_source_target."'";
     }
