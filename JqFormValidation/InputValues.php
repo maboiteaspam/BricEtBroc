@@ -1,4 +1,8 @@
 <?php
+namespace BricEtBroc;
+
+use BricEtBroc\InputValueAccessor as InputValueAccessor;
+
 class InputValues{
     public $data_sources;
     const DFT_SRCE = "from_default";

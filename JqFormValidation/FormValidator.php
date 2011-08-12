@@ -1,4 +1,13 @@
 <?php
+namespace BricEtBroc;
+
+use BricEtBroc\ValidatorFinder as ValidatorFinder;
+use BricEtBroc\InputValues as InputValues;
+use BricEtBroc\Validator as Validator;
+use BricEtBroc\CallbackValidator as CallbackValidator;
+use BricEtBroc\Dependency as Dependency;
+use BricEtBroc\Message as Message;
+use BricEtBroc\Messages as Messages;
 
 class FormValidator{
     public $targetElement;
@@ -10,8 +19,8 @@ class FormValidator{
     
     /**
      *
-     * @param type $targetElement
-     * @param type $options 
+     * @param string $targetElement
+     * @param array $options 
      */
     public function __construct( $targetElement, $options ){
         $this->targetElement    = $targetElement;

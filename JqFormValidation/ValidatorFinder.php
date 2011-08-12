@@ -1,22 +1,23 @@
 <?php
+namespace BricEtBroc;
 
 class ValidatorFinder{
     public $validators_ref = array(
-        "required"  =>"RequiredValidator",
-        "email"     =>"EmailValidator",
-        "minlength" =>"MinLengthValidator",
-        "maxlength" =>"MaxLengthValidator",
-        "ajax"      =>"AjaxValidator",
-        "regex"     =>"RegexValidator",
-        "mincount"  =>"MinCountValidator",
-        "maxcount"  =>"MaxCountValidator",
+        "required"  =>"BricEtBroc\RequiredValidator",
+        "email"     =>"BricEtBroc\EmailValidator",
+        "minlength" =>"BricEtBroc\MinLengthValidator",
+        "maxlength" =>"BricEtBroc\MaxLengthValidator",
+        "ajax"      =>"BricEtBroc\AjaxValidator",
+        "regex"     =>"BricEtBroc\RegexValidator",
+        "mincount"  =>"BricEtBroc\MinCountValidator",
+        "maxcount"  =>"BricEtBroc\MaxCountValidator",
     );
     public $dependencies_ref = array(
-        "checked"   =>"CheckedDependency",
-        "selected"  =>"SelectedDependency",
-        "unchecked" =>"UncheckedDependency",
-        "notblank"  =>"NotBlankDependency",
-        "blank"     =>"BlankDependency",
+        "checked"   =>"BricEtBroc\CheckedDependency",
+        "selected"  =>"BricEtBroc\SelectedDependency",
+        "unchecked" =>"BricEtBroc\UncheckedDependency",
+        "notblank"  =>"BricEtBroc\NotBlankDependency",
+        "blank"     =>"BricEtBroc\BlankDependency",
         );
     
     public function __construct($validators_refs = null, $dependencies_ref=null) {

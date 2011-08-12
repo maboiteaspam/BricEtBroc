@@ -18,6 +18,9 @@ function assert_false( $description, $result_operation){
     }
 }
 
+use BricEtBroc\FormValidator as FormValidator;
+use BricEtBroc\InputValueAccessor as InputValueAccessor;
+use BricEtBroc\Dependency as Dependency;
 
 $in_values = array("nom"=>"");
 
@@ -217,7 +220,7 @@ assert_true("'nom' is a required argument, complex process rule", $message->mess
 $in_values = array("prenom"=>"");
 $options = array('rules' => array(
                     'nom' => array(
-                        "somecallback"=>function(InputValueAccessor $valueAccessor){
+                        "somecallback"=>function(BricEtBroc\InputValueAccessor $valueAccessor){
                                 return $valueAccessor->is_set();
                             }
                         ),

@@ -1,4 +1,7 @@
 <?php
+namespace BricEtBroc;
+
+use BricEtBroc\InputValues as InputValues;
 
 class InputValueAccessor{
     /**

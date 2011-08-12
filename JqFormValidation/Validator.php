@@ -1,4 +1,8 @@
 <?php
+namespace BricEtBroc;
+
+use BricEtBroc\InputValueAccessor as InputValueAccessor;
+use BricEtBroc\Dependency as Dependency;
 
 class Validator{
     /**

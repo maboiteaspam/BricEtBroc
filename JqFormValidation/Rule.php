@@ -1,4 +1,8 @@
 <?php
+namespace BricEtBroc;
+
+use \BricEtBroc\Validator as Validator;
+use BricEtBroc\InputValueAccessor as InputValueAccessor;
 
 class Rule{
     public $elementTarget;

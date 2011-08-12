@@ -1,5 +1,7 @@
 <?php
-class Messages extends ArrayObject{
+namespace BricEtBroc;
+
+class Messages extends \ArrayObject{
     
 }
 class Message{
