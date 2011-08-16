@@ -73,11 +73,16 @@ class Validator{
         if( $this->has_dependency() ){
             $assert = $this->dependency->__toJavascript();
         }else{
-            if(is_object($var) === false )
-                $assert = strval($this->assert_information);
-            elseif(is_string($var) === false )
-                $assert = var_export($this->assert_information, true);
-            $assert = "'".$assert."'";
+            if(is_object($this->assert_information) )
+                $assert = "'".strval($this->assert_information)."'";
+            elseif(is_bool($this->assert_information) )
+                $assert = $this->assert_information===true?"true":"false";
+            elseif(is_int($this->assert_information) )
+                $assert = $this->assert_information;
+            elseif(is_array($this->assert_information) )
+                $assert = "'".var_export($this->assert_information, true)."'";
+            else
+                $assert = "'".$this->assert_information."'";
         }
         return $assert;
     }
