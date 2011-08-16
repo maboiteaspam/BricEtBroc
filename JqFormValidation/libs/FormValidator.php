@@ -73,7 +73,7 @@ class FormValidator{
                         $oValidator = new CallbackValidator();
                         $oValidator->setAccessor( $oRule->getAccessor() );
                         $oValidator->setAssertInformation($validator_assertion );
-                    }else{
+                    }elseif( $oValidator !== NULL){
                         $oValidator->setAccessor( $oRule->getAccessor() );
                         $oValidator->setAssertInformation($validator_assertion );
 
@@ -88,6 +88,9 @@ class FormValidator{
                             $oValidator->setAssertInformation(NULL);
                             $oValidator->setDependency($validator_assertion);
                         }
+                    }else{
+                        //- no validator found..
+                        throw new \Exception("Unknown validator for $validator_name=>".  var_export($validator_assertion, true));
                     }
                     
                 }
