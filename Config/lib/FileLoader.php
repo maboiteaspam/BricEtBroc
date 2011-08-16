@@ -1,8 +1,8 @@
 <?php
-namespace BricEtBroc;
+namespace BricEtBroc\Config;
 
 use \sfYaml as sfYaml;
-use BricEtBroc\Super_Array_walk_recursive as Super_Array_walk_recursive;
+use BricEtBroc\Config\Super_Array_walk_recursive as Super_Array_walk_recursive;
 
 class FileLoader{
     

@@ -1,5 +1,5 @@
 <?php
-namespace BricEtBroc;
+namespace BricEtBroc\Config;
 
 class Container extends \ArrayObject{
     /**

@@ -39,10 +39,10 @@ function rrmdir($dir) {
     } 
 }
 
-use BricEtBroc\Container as Container;
-use BricEtBroc\Bridge as Bridge;
-use BricEtBroc\Cache as Cache;
-use BricEtBroc\FileLoader as FileLoader;
+use BricEtBroc\Config\Container as Container;
+use BricEtBroc\Config\Bridge as Bridge;
+use BricEtBroc\Config\Cache as Cache;
+use BricEtBroc\Config\FileLoader as FileLoader;
 
 /*******************************************************************************
  * 

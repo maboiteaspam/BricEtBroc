@@ -1,9 +1,9 @@
 <?php
-namespace BricEtBroc;
+namespace BricEtBroc\Config;
 
-use BricEtBroc\Container as Container;
-use BricEtBroc\Cache as Cache;
-use BricEtBroc\FileLoader as FileLoader;
+use BricEtBroc\Config\Container as Container;
+use BricEtBroc\Config\Cache as Cache;
+use BricEtBroc\Config\FileLoader as FileLoader;
 
 class Bridge{
     

@@ -1,5 +1,5 @@
 <?php
-namespace BricEtBroc;
+namespace BricEtBroc\Config;
 
 class Cache{
     protected static $shaed_file_name = array();

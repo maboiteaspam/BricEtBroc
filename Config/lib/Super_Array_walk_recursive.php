@@ -1,5 +1,5 @@
 <?php
-namespace BricEtBroc;
+namespace BricEtBroc\Config;
 
 /**
  * @see http://www.php.net/manual/fr/function.array-walk-recursive.php#71060
