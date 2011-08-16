@@ -93,7 +93,7 @@ $yaml_content = "
 test: Simple Alias Example
 extern_file: ::@$yaml_file2
 ";
-$yaml_file          = create_file( $yaml_content, "yml" );
+$yaml_file      = create_file( $yaml_content, "yml" );
 $loader         = FileLoader::loadFile($yaml_file);
 $Config         = $loader->getData();
 $Config_files   = $loader->getMergedFiles();
@@ -119,12 +119,12 @@ $yaml_content2 = "
 test: Simple Alias Example2
 test2: Simple Alias Example
 ";
-$yaml_file2         = create_file( $yaml_content2, "yml" );
+$yaml_file2   = create_file( $yaml_content2, "yml" );
 $yaml_content = "
 test: Simple Alias Example
 extern_file: ::@$yaml_file2
 ";
-$yaml_file          = create_file( $yaml_content, "yml" );
+$yaml_file      = create_file( $yaml_content, "yml" );
 
 $loader         = FileLoader::loadFile($yaml_file);
 $Config         = $loader->getData();
@@ -171,7 +171,7 @@ $yaml_content = "
 test: Simple Alias Example
 extern_file: ::@".  basename($yaml_file2)."
 ";
-$yaml_file          = create_file( $yaml_content, "yml" );
+$yaml_file      = create_file( $yaml_content, "yml" );
 
 $loader         = FileLoader::loadFile($yaml_file);
 $Config         = $loader->getData();
