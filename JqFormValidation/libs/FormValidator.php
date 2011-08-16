@@ -17,6 +17,8 @@ class FormValidator{
     public $rules_errors;
     public $input_values;
     
+    public $has_parsed;
+    
     /**
      *
      * @param string $targetElement
@@ -32,6 +34,7 @@ class FormValidator{
         $val_ref = isset($options["validators"])?$options["validators"]:NULL;
         $dep_ref = isset($options["dependencies"])?$options["dependencies"]:NULL;
         $this->validator_finder = new ValidatorFinder($val_ref, $dep_ref);
+        $this->has_parsed       = false;
     }
     
     /**
@@ -92,6 +95,7 @@ class FormValidator{
                 $oRule->addValidator($validator_name, $oValidator);
             }
         }
+        $this->has_parsed = true;
         return true;
     }
     
@@ -100,7 +104,8 @@ class FormValidator{
      * @return bool
      */
     public function validate(){
-        $this->parseOptions();
+        if( ! $this->has_parsed )
+            $this->parseOptions ();
         foreach( $this->rules as $name=>$rule ){
             if( $rule->isValid() === false ){
                 $this->rules_errors[$name] = $rule;
@@ -150,6 +155,8 @@ class FormValidator{
     }
     
     public function __toJavascript(){
+        if( ! $this->has_parsed )
+            $this->parseOptions ();
         $temp = "";
         $temp .= "'rules':{ ";
         foreach( $this->rules as $rule ){
@@ -160,13 +167,24 @@ class FormValidator{
         
         $orules = $this->options["rules"];
         $this->options["rules"] = "----";
-        $retour = $this->__toString();
+        $retour = json_encode($this->options);
         $this->options["rules"] = $orules;
         $retour = str_replace('"rules":"----"', $temp, $retour);
         return $retour;
     }
     
-    public function __toString(){
-        return json_encode($this->options);
+    public function __toHTML( $surrounded = true ){
+        $retour = "";
+        
+        $options = $this->__toJavascript();
+        $retour = '
+            $("form[name='.$this->targetElement.']").validate('.$options.');
+            ';
+        
+        if( $surrounded ){
+            $retour = '<script type="text/javascript">'.$retour.'</script>';
+        }
+        
+        return $retour;
     }
 }
