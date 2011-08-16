@@ -72,10 +72,10 @@ yaml: |
     - Oren
     - *showell
 ";
-$yaml_file          = create_file( $yaml_content, "yml" );
-$config_infos       = FileLoader::loadFile($yaml_file);
-$Config             = $config_infos["config"];
-$Config_files       = $config_infos["files"];
+$yaml_file      = create_file( $yaml_content, "yml" );
+$loader         = FileLoader::loadFile($yaml_file);
+$Config         = $loader->getData();
+$Config_files   = $loader->getMergedFiles();
 assert_true("Test read config value", in_array("test", array_keys($Config)) );
 assert_true("Test read config value", $Config["test"]==="Simple Alias Example" );
 assert_true("Test files infos", in_array($yaml_file, $Config_files) );
@@ -94,9 +94,9 @@ test: Simple Alias Example
 extern_file: ::@$yaml_file2
 ";
 $yaml_file          = create_file( $yaml_content, "yml" );
-$config_infos       = FileLoader::loadFile($yaml_file);
-$Config             = $config_infos["config"];
-$Config_files       = $config_infos["files"];
+$loader         = FileLoader::loadFile($yaml_file);
+$Config         = $loader->getData();
+$Config_files   = $loader->getMergedFiles();
 assert_true("Test read config value", in_array("test", array_keys($Config)) );
 assert_true("Test read config value", in_array("extern_file", array_keys($Config)) );
 assert_true("Test read config value", is_array($Config["extern_file"]) );
@@ -126,11 +126,11 @@ extern_file: ::@$yaml_file2
 ";
 $yaml_file          = create_file( $yaml_content, "yml" );
 
-$config_infos       = FileLoader::loadFile($yaml_file);
-$Config             = $config_infos["config"];
-$Config_files       = $config_infos["files"];
+$loader         = FileLoader::loadFile($yaml_file);
+$Config         = $loader->getData();
+$Config_files   = $loader->getMergedFiles();
 
-assert_true("Test save config", Cache::save($cache_dir, $yaml_file, $config_infos) );
+assert_true("Test save config", Cache::save($cache_dir, $loader) );
 $cached_config = Cache::load($cache_dir, $yaml_file);
 
 assert_true("verify cached_config == config", $Config == $cached_config );
@@ -173,11 +173,11 @@ extern_file: ::@".  basename($yaml_file2)."
 ";
 $yaml_file          = create_file( $yaml_content, "yml" );
 
-$config_infos       = FileLoader::loadFile($yaml_file);
-$Config             = $config_infos["config"];
-$Config_files       = $config_infos["files"];
+$loader         = FileLoader::loadFile($yaml_file);
+$Config         = $loader->getData();
+$Config_files   = $loader->getMergedFiles();
 
-assert_true("Test save config", Cache::save($cache_dir, $yaml_file, $config_infos) );
+assert_true("Test save config", Cache::save($cache_dir, $loader) );
 $cached_config = Cache::load($cache_dir, $yaml_file);
 
 assert_true("verify cached_config == config", $Config == $cached_config );

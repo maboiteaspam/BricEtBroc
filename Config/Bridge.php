@@ -20,13 +20,12 @@ class Bridge{
             if(file_exists($path_to_config_file) ){
                 if( Cache::isFresh($cache_path, $path_to_config_file) ){
                     $curent_config  = Cache::load($cache_path, $path_to_config_file);
-                    $retour         = array_merge( $retour, $curent_config );
                 }else{
-                    $curent_config  = FileLoader::loadFile($path_to_config_file);
-                    Cache::save($cache_path, $path_to_config_file, $curent_config);
-                    $curent_config  = $curent_config["config"];
-                    $retour         = array_merge( $retour, $curent_config );
+                    $loader  = FileLoader::loadFile($path_to_config_file);
+                    Cache::save($cache_path, $path_to_config_file, $loader);
+                    $curent_config = $loader->getData();
                 }
+                $retour = array_merge( $retour, $curent_config );
             }
         }
         

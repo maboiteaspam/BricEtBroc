@@ -59,20 +59,22 @@ class Cache{
     public static function load( $cache_path, $config_file_path ){
         $cache_file_path = $cache_path."/".self::sha1_file_name($config_file_path).".php";
         $cached_config = include($cache_file_path);
-        return $cached_config["config"];
+        return $cached_config["data"];
     }
     
     /**
      *
      * @param string $cache_path
-     * @param string $config_file_path
-     * @param array $config_meta
+     * @param FileLoader $config_loader
      * @return bool 
      */
-    public static function save( $cache_path, $config_file_path, $config_meta ){
-        if( $cache_path === null ){
-            return false;
-        }
+    public static function save( $cache_path, FileLoader $config_loader ){
+        
+        $config_meta = array(
+            "files"=>$config_loader->getMergedFiles(),
+            "data"=>$config_loader->getData()
+        );
+        $config_file_path = $config_loader->getConfigFilePath();
         
         $config_meta["times"] = array();
         foreach( $config_meta["files"] as $index=>$file ){
