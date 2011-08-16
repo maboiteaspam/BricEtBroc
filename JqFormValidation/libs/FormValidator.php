@@ -140,7 +140,9 @@ class FormValidator{
             foreach( $rule->getErroneousValidator() as $v_name=> $validator ){
                 $message = new Message();
                 $message->target    = $rule->elementTarget;
-                if( $rule->getAccessor()->is_set() )
+                if( $rule->getAccessor()->is_set()
+                        && $rule->getAccessor()->is_textual()
+                        && $rule->getAccessor()->is_list() === false )
                     $message->value     = $rule->getAccessor()->read();
                 $message->message   = "";
                 if( isset($this->options["messages"]) ){
