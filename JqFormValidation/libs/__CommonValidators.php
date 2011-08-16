@@ -25,7 +25,7 @@ class MaxLengthValidator extends Validator{
 
 class MinCountValidator extends Validator{
     public function validate_value( InputValueAccessor $valueAccessor ){
-        return count($valueAccessor->read())<=intval( $this->assert_information );
+        return count($valueAccessor->read())>=intval( $this->assert_information );
     }
 }
 
