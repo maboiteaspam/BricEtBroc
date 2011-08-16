@@ -93,14 +93,14 @@ class CallbackValidator extends Validator{
         return call_user_func_array($this->assert_information, array($valueAccessor));
     }
 }
-class AjaxValidator extends CallbackValidator{
-    
-    public function getIdentifier(){
-        
-    }
-    
+class RemoteValidator extends CallbackValidator{
     public function __toJavascript(){
-        return "function(){alert('i should do it on ajax !!')";
+        $retour = "";
+        $retour .= "{";
+        $retour .= "'url':'".$_SERVER["REQUEST_URI"]."?vid=".$this->identifier."', ";
+        $retour .= "'type':'POST'";
+        $retour .= "}";
+        return $retour;
     }
 }
 

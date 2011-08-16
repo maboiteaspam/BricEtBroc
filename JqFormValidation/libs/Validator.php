@@ -4,17 +4,36 @@ namespace BricEtBroc\Form;
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
 use BricEtBroc\Form\Dependency as Dependency;
 
-class Validator{
+abstract class Validator{
     /**
      *
      * @var mixed
      */
     protected $assert_information;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $identifier;
+    
+    /**
+     *
+     * @var int
+     */
+    protected static $identifier_incr = 0;
+    
     /**
      *
      * @var Dependency 
      */
     protected $dependency;
+    
+    public function __construct(){
+        $this->identifier = self::$identifier_incr;
+        self::$identifier_incr++;
+        $this->identifier = sha1(get_class($this)."_".$this->identifier);
+    }
     
     /**
      *
@@ -32,6 +51,10 @@ class Validator{
     
     public function setAssertInformation( $assert_information ) {
         $this->assert_information = $assert_information;
+    }
+    
+    public function getIdentifier(){
+        return $this->identifier;
     }
     
     /**
@@ -63,6 +86,13 @@ class Validator{
         }
         return $this->validate_value( $this->accessor );
     }
+    
+    /**
+     * 
+     * @param InputValueAccessor $accessor
+     * @return bool
+     */
+    public abstract function validate_value( InputValueAccessor $accessor );
     
     public function has_dependency(){
         return $this->dependency !== NULL;

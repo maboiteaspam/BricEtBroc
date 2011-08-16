@@ -101,13 +101,19 @@ class FormValidator{
     
     /**
      *
-     * @return bool
+     * @param array|string|null $remote_validators_id
+     * @return type 
      */
-    public function validate(){
+    public function validate( $remote_validators_id=NULL ){
         if( ! $this->has_parsed )
             $this->parseOptions ();
+        
+        if( $remote_validators_id!==NULL 
+            && is_array($remote_validators_id) === false )
+            $remote_validators_id = array($remote_validators_id);
+        
         foreach( $this->rules as $name=>$rule ){
-            if( $rule->isValid() === false ){
+            if( $rule->validate( $remote_validators_id ) === false ){
                 $this->rules_errors[$name] = $rule;
             }
         }

@@ -45,10 +45,21 @@ class Rule{
     
     /**
      *
+     * @param array|null $remote_validators_id
      * @return bool
      */
-    public function isValid(){
-        foreach( $this->validators as $name=>$validator ){
+    public function validate($remote_validators_id=NULL){
+        $validators = array();
+        if( $remote_validators_id === NULL ){
+            $validators = $this->validators;
+        }else{
+            foreach( $this->validators as $name=>$validator ){
+                if( in_array($validator->getIdentifier( ), $remote_validators_id) ){
+                    $validators[$name] = $validator;
+                }
+            }
+        }
+        foreach( $validators as $name=>$validator ){
             if( $validator->validate( ) === false ){
                 $this->validators_errors[$name] = $validator;
             }

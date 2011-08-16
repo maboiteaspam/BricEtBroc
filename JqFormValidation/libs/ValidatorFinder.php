@@ -7,7 +7,7 @@ class ValidatorFinder{
         "email"     =>"BricEtBroc\Form\EmailValidator",
         "minlength" =>"BricEtBroc\Form\MinLengthValidator",
         "maxlength" =>"BricEtBroc\Form\MaxLengthValidator",
-        "ajax"      =>"BricEtBroc\Form\AjaxValidator",
+        "remote"    =>"BricEtBroc\Form\RemoteValidator",
         "regex"     =>"BricEtBroc\Form\RegexValidator",
         "mincount"  =>"BricEtBroc\Form\MinCountValidator",
         "maxcount"  =>"BricEtBroc\Form\MaxCountValidator",
