@@ -1,15 +1,15 @@
 <?php
 namespace BricEtBroc;
 
-class Config extends \ArrayObject{
+class Container extends \ArrayObject{
     /**
      *
-     * @var CKConfig 
+     * @var BricEtBroc\Container
      */
     protected static $instance;
     /**
      *
-     * @return CKConfig 
+     * @return BricEtBroc\Container
      */
     public static function getInstance(){
         return self::$instance;
@@ -17,10 +17,10 @@ class Config extends \ArrayObject{
     /**
      *
      * @param array $values
-     * @return CKConfig 
+     * @return BricEtBroc\Container
      */
     public static function setInstance( array $values ){
-        self::$instance = new Config( $values );
+        self::$instance = new Container( $values );
         return self::$instance;
     }
 }

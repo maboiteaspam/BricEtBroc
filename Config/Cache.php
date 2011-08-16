@@ -1,9 +1,14 @@
 <?php
 namespace BricEtBroc;
 
-class ConfigCache{
+class Cache{
     protected static $shaed_file_name = array();
     
+    /**
+     *
+     * @param string $file_path
+     * @return string 
+     */
     protected static function sha1_file_name( $file_path ){
         if( isset(self::$shaed_file_name[$file_path]) === false )
             self::$shaed_file_name[$file_path] = sha1($file_path);
@@ -12,9 +17,9 @@ class ConfigCache{
     
     /**
      *
-     * @param type $cache_path
-     * @param type $config_file_path
-     * @return type 
+     * @param string $cache_path
+     * @param string $config_file_path
+     * @return bool 
      */
     public static function isFresh( $cache_path, $config_file_path ){
         if( $cache_path === null ){
@@ -45,12 +50,25 @@ class ConfigCache{
         return true;
     }
     
+    /**
+     *
+     * @param string $cache_path
+     * @param string $config_file_path
+     * @return array 
+     */
     public static function load( $cache_path, $config_file_path ){
         $cache_file_path = $cache_path."/".self::sha1_file_name($config_file_path).".php";
         $cached_config = include($cache_file_path);
         return $cached_config["config"];
     }
     
+    /**
+     *
+     * @param string $cache_path
+     * @param string $config_file_path
+     * @param array $config_meta
+     * @return bool 
+     */
     public static function save( $cache_path, $config_file_path, $config_meta ){
         if( $cache_path === null ){
             return false;
