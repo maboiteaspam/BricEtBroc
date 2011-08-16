@@ -238,6 +238,70 @@ assert_true("'nom' is a required argument, ajaxified", count($messages)===1);
 $message = $messages[0];
 assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad value %value% typed in.');
 
+/*******************************************************************************
+ * @todo finir ce test
+ */
+$in_values = array("nom"=>array("","--"));
+$options = array('rules' => array(
+                    'nom[]' => array(
+                        "somecallback"=>"required"
+                        ),
+                    ),
+                 'messages'=>array(
+                     'nom'=>'Bad value %value% typed in.'
+                 ),
+                );
+$validator = new FormValidator("f_test_form", $options);
+$validator->setDataSource($in_values);
+$validator->validate();
+assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
+$messages = $validator->getMessages();
+assert_true("'nom' is a required argument, ajaxified", count($messages)===1);
+$message = $messages[0];
+assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad value %value% typed in.');
+/*******************************************************************************
+ * @todo finir ce test
+ */
+$in_values = array("nom"=>array("","--"));
+$options = array('rules' => array(
+                    'nom\[\]' => array(
+                        "somecallback"=>"required"
+                        ),
+                    ),
+                 'messages'=>array(
+                     'nom'=>'Bad value %value% typed in.'
+                 ),
+                );
+$validator = new FormValidator("f_test_form", $options);
+$validator->setDataSource($in_values);
+$validator->validate();
+assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
+$messages = $validator->getMessages();
+assert_true("'nom' is a required argument, ajaxified", count($messages)===1);
+$message = $messages[0];
+assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad value %value% typed in.');
+/*******************************************************************************
+ * @todo finir ce test
+ */
+$in_values = array("nom"=>array("test"=>"--"));
+$options = array('rules' => array(
+                    'nom\[test\]' => array(
+                        "somecallback"=>"required"
+                        ),
+                    ),
+                 'messages'=>array(
+                     'nom'=>'Bad value %value% typed in.'
+                 ),
+                );
+$validator = new FormValidator("f_test_form", $options);
+$validator->setDataSource($in_values);
+$validator->validate();
+assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
+$messages = $validator->getMessages();
+assert_true("'nom' is a required argument, ajaxified", count($messages)===1);
+$message = $messages[0];
+assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad value %value% typed in.');
+
 
 
 
