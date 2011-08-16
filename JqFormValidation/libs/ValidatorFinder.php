@@ -11,6 +11,8 @@ class ValidatorFinder{
         "regex"     =>"BricEtBroc\Form\RegexValidator",
         "mincount"  =>"BricEtBroc\Form\MinCountValidator",
         "maxcount"  =>"BricEtBroc\Form\MaxCountValidator",
+        "email"     =>"BricEtBroc\Form\EmailValidator",
+        "url"       =>"BricEtBroc\Form\UrlValidator",
     );
     public $dependencies_ref = array(
         "checked"   =>"BricEtBroc\Form\CheckedDependency",
