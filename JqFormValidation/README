@@ -1,0 +1,26 @@
+A PHP comopnent to handle form's valdiation
+
+Inspired by http://code.google.com/p/jquery-validation-php-plugin/
+Using http://docs.jquery.com/Plugins/Validation 
+
+Require php5.3
+Require Jquery to handle client side validation
+Require GD for image upload
+
+Aim's to fast and simple to use, 
+    to connect to any other component (thinking to ORM / MVC)
+    to use directly without any kind of FrameWork
+
+Provides common validator (required, min|maxlength, min|maxcount, email, url, file upload, image upload, remote|ajax, regex, callback)
+Provides common dependency (checked, selected, notblank, blank)
+
+Provide way to add validator for both PHP/JS side's 
+Provide way to add more complex dependency for both PHP/JS side's
+
+Need's examples ? Have look in 
+    /html_tests/
+    /test.php
+    
+Wnat's to know what is missing ? Have look on 
+    /TODO
+

@@ -1,0 +1,10 @@
+* Work on list item, see related dependency, see message correlations (:/)
+* Add a general submitHandler
+    To give a chance to user todo any other extra job concerning validation in a function
+* Create some PHP -> JS errors handlers (tooltips, generalErrorBox etc)
+* improve test suite (...)
+* improve examples
+* Add placeholder in error message
+* Have look on grouping functions of jqValidate and impact on current version
+* Add seasurf component
+* Add equality validator
