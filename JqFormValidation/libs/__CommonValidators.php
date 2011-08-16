@@ -104,6 +104,72 @@ class RemoteValidator extends CallbackValidator{
     }
 }
 
-class FileUploadValidator{
+class FileUploadValidator extends Validator{
     
+    public function validate_value( InputValueAccessor $valueAccessor ){
+        $valueAccessor->setInputValuesSource("files");
+        $files  = $valueAccessor->read();
+        $retour = $files["error_code"]===UPLOAD_ERR_OK;
+        return $retour;
+    }
+}
+
+class ImageUploadValidator extends Validator{
+    
+    public function validate_value( InputValueAccessor $valueAccessor ){
+        if (! extension_loaded('gd')) { return true; }
+        
+        $valueAccessor->setInputValuesSource("files");
+        $valid_types     = is_array($this->assert_information)?$this->assert_information:array($this->assert_information);
+
+        foreach( $valid_types as $valid_type ){
+            if(imagetypes() & $valid_type){
+                if( $valid_type === IMG_GIF){
+                    try{
+                        $retour = imagecreatefromgif($im);
+                        if( $retour === true ) break;
+                    }catch(Exception $Ex ){}
+                }elseif( $valid_type === IMG_JPG){
+                    try{
+                        $retour = imagecreatefromjpeg($im);
+                        if( $retour === true ) break;
+                    }catch(Exception $Ex ){}
+                }elseif( $valid_type === IMG_PNG){
+                    try{
+                        $retour = imagecreatefrompng($im);
+                        if( $retour === true ) break;
+                    }catch(Exception $Ex ){}
+                }elseif( $valid_type === IMG_WBMP){
+                    try{
+                        $retour = imagecreatefromwbmp($im);
+                        if( $retour === true ) break;
+                    }catch(Exception $Ex ){}
+                }elseif( $valid_type === IMG_XPM){
+                    try{
+                        $retour = imagecreatefromxpm($im);
+                        if( $retour === true ) break;
+                    }catch(Exception $Ex ){}
+                }
+            }
+        }
+        
+        return $retour;
+    }
+}
+
+class ExtUploadValidator extends Validator{
+    
+    public function validate_value( InputValueAccessor $valueAccessor ){
+        $valueAccessor->setInputValuesSource("files");
+        $files          = $valueAccessor->read();
+        $valid_exts     = is_array($this->assert_information)?$this->assert_information:array($this->assert_information);
+        $retour         = false;
+        foreach( $valid_exts as $valid_ext ){
+            if( substr($files["name"], -strlen($valid_ext)) == $valid_ext ){
+                $retour = true;
+                break;
+            }
+        }
+        return $retour;
+    }
 }
