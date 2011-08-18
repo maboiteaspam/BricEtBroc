@@ -68,7 +68,7 @@ abstract class Validator{
              *  - with a checked value, is_confirmed will return true, we don't ignore
              *  - with an unchecked value, is_confirmed will return false, we ignore
              */
-            $retour = $this->dependency->is_confirmed( );
+            $retour = $this->dependency->confirm( );
         }
         return $retour;
     }
@@ -84,7 +84,7 @@ abstract class Validator{
         if( $this->is_ignored( ) ){
             return true;
         }
-        return $this->validate_value( $this->accessor );
+        return $this->validate_value( $this->accessor, $this->assert_information );
     }
     
     /**
@@ -92,7 +92,7 @@ abstract class Validator{
      * @param InputValueAccessor $accessor
      * @return bool
      */
-    public abstract function validate_value( InputValueAccessor $accessor );
+    public abstract function validate_value( InputValueAccessor $accessor, $assert_information );
     
     public function has_dependency(){
         return $this->dependency !== NULL;

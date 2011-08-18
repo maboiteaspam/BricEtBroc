@@ -8,6 +8,7 @@ use BricEtBroc\Form\CallbackValidator as CallbackValidator;
 use BricEtBroc\Form\Dependency as Dependency;
 use BricEtBroc\Form\Message as Message;
 use BricEtBroc\Form\Messages as Messages;
+use BricEtBroc\Form\RuleValidator as RuleValidator;
 
 class FormValidator{
     public $targetElement;
@@ -16,6 +17,7 @@ class FormValidator{
     public $rules;
     public $rules_errors;
     public $input_values;
+    public $validator_finder;
     
     public $has_parsed;
     
@@ -39,10 +41,10 @@ class FormValidator{
     
     /**
      *
-     * @param array $input_values 
+     * @param InputValues $input_values
      */
-    public function setDataSource( array $input_values, $data_source_name=InputValues::DFT_SRCE ){
-        $this->input_values->setDataSource($input_values, $data_source_name );
+    public function setInputValues( InputValues $input_values ){
+        $this->input_values = $input_values;
     }
     
     /**
@@ -55,7 +57,7 @@ class FormValidator{
         
         foreach( $rules as $elementTarget => $validators ){
             if( isset( $this->rules[$elementTarget]) ) $oRule = $this->rules[$elementTarget];
-            else{ $oRule = new Rule($elementTarget); $this->rules[$elementTarget] = $oRule; }
+            else{ $oRule = new RuleValidator($elementTarget); $this->rules[$elementTarget] = $oRule; }
             
             $oRule->setAccessor( $this->input_values->getAccessor($elementTarget) );
             
@@ -87,6 +89,7 @@ class FormValidator{
                         }elseif( $validator_assertion instanceof Dependency ){
                             $oValidator->setAssertInformation(NULL);
                             $oValidator->setDependency($validator_assertion);
+                            $validator_assertion->setAccessor( $this->input_values->getAccessor($validator_assertion) );
                         }
                     }else{
                         //- no validator found..
@@ -139,7 +142,7 @@ class FormValidator{
     public function getMessages(){
         $retour = new Messages();
         foreach( $this->rules_errors as $rule_name=>$rule ){
-            /* @var $rule Rule */
+            /* @var $rule RuleValidator */
             foreach( $rule->getErroneousValidator() as $v_name=> $validator ){
                 $message = new Message();
                 $message->target    = $rule->elementTarget;
@@ -165,7 +168,7 @@ class FormValidator{
         return $retour;
     }
     
-    public function __toJavascript(){
+    public function __optionsToJavascript(){
         if( ! $this->has_parsed )
             $this->parseOptions ();
         $temp = "";
@@ -187,7 +190,7 @@ class FormValidator{
     public function __toHTML( $surrounded = true ){
         $retour = "";
         
-        $options = $this->__toJavascript();
+        $options = $this->__optionsToJavascript();
         $retour = '
             $("form[name='.$this->targetElement.']").validate('.$options.');
             ';

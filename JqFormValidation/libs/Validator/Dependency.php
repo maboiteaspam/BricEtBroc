@@ -14,7 +14,10 @@ abstract class Dependency{
     public function setAccessor( InputValueAccessor $accessor ) {
         $this->accessor = $accessor;
     }
-    public abstract function is_confirmed();
+    public function confirm(){
+        return $this->is_confirmed( $this->accessor );
+    }
+    public abstract function is_confirmed( InputValueAccessor $accessor );
     public function __toJavascript(){
         return "'".$this->accessor->data_source_target."'";
     }

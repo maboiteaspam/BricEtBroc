@@ -4,8 +4,8 @@
 include("../libs/__include_files.php");
 
 use BricEtBroc\Form\FormValidator as FormValidator;
+use BricEtBroc\Form\InputValues as InputValues;
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
-use BricEtBroc\Form\Dependency as Dependency;
 
 $options = array('rules' => array(
                     'testfield' => 
@@ -18,6 +18,9 @@ $options = array('rules' => array(
 $validator = new FormValidator("f_testform", $options);
 
 if( $_SERVER['REQUEST_METHOD'] === "POST" ){
+    
+    $validator->setInputValues(new InputValues($_POST) );
+    
     $is_remote = false;
     if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) ){
         $is_remote = $_SERVER['HTTP_X_REQUESTED_WITH']==="XMLHttpRequest";
@@ -25,7 +28,6 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
     
     if( $is_remote ){
         $remote_validator_id = isset($_GET["vid"])?$_GET["vid"]:"";
-        $validator->setDataSource($_POST);
         $validator->validate($remote_validator_id);
         if( $validator->hasErrors() === false ){
             echo "true";
@@ -34,7 +36,6 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
         }
         die();
     }else{
-        $validator->setDataSource($_POST);
         $validator->validate();
         if( $validator->hasErrors() === false ){
             echo "ok";

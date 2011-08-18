@@ -36,7 +36,7 @@ class ValidatorFinder{
     
     /**
      *
-     * @param type $validator_name
+     * @param string $validator_name
      * @return Validator
      */
     public function find( $validator_name ){

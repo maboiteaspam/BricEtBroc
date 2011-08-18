@@ -1,13 +1,13 @@
 <?php
 
-include("FormValidator.php");
-include("InputValueAccessor.php");
-include("InputValues.php");
-include("Rule.php");
-include("Validator.php");
-include("ValidatorFinder.php");
-include("Message.php");
-include("Dependency.php");
+include("Validator/FormValidator.php");
+include("Validator/InputValueAccessor.php");
+include("Validator/InputValues.php");
+include("Validator/RuleValidator.php");
+include("Validator/Validator.php");
+include("Validator/ValidatorFinder.php");
+include("Validator/Message.php");
+include("Validator/Dependency.php");
 
-include("__CommonValidators.php");
-include("__CommonDependencies.php");
+include("Validator/__CommonValidators.php");
+include("Validator/__CommonDependencies.php");

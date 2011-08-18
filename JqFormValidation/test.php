@@ -19,11 +19,13 @@ function assert_false( $description, $result_operation){
 }
 
 use BricEtBroc\Form\FormValidator as FormValidator;
+use BricEtBroc\Form\InputValues as InputValues;
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
 use BricEtBroc\Form\Dependency as Dependency;
 
-$in_values = array("nom"=>"");
-
+$input_values = new InputValues( 
+        array("nom"=>"") 
+        );
 /*******************************************************************************
  * 
  */
@@ -34,7 +36,7 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_false("'nom' is a required argument", $validator->validate());
 
 /*******************************************************************************
@@ -45,7 +47,7 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_false("'nom' is a required argument, inlined", $validator->validate());
 
 /*******************************************************************************
@@ -59,7 +61,7 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_false("'nom' is a required argument, with minlength>=2", $validator->validate());
 
 
@@ -73,14 +75,16 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_true("'nom' is a required argument, if 'text_box' is not checked", $validator->validate());
 
 
 /*******************************************************************************
  * 
  */
-$in_values = array("nom"=>"", "text_box2"=>true);
+$input_values = new InputValues( 
+        array("nom"=>"", "text_box2"=>true)
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         'required' => 'text_box2:unchecked',
@@ -88,13 +92,15 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_false("'nom' is a required argument, if 'text_box' is not checked", $validator->validate());
 
 /*******************************************************************************
  * 
  */
-$in_values = array("nom"=>"");
+$input_values = new InputValues( 
+        array("nom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "ajax"=>function(InputValueAccessor $valueAccessor){
@@ -104,13 +110,15 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_true("'nom' is a required argument, ajaxified", $validator->validate());
 
 /*******************************************************************************
  * 
  */
-$in_values = array("prenom"=>"");
+$input_values = new InputValues( 
+        array("prenom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "ajax"=>function(InputValueAccessor $valueAccessor){
@@ -120,13 +128,15 @@ $options = array('rules' => array(
                     )
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 assert_false("'nom' is a required argument, ajaxified", $validator->validate());
 
 /*******************************************************************************
  * 
  */
-$in_values = array("prenom"=>"");
+$input_values = new InputValues( 
+        array("prenom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "ajax"=>function(InputValueAccessor $valueAccessor){
@@ -139,7 +149,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -150,7 +160,9 @@ assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad 
 /*******************************************************************************
  * 
  */
-$in_values = array("prenom"=>"");
+$input_values = new InputValues( 
+        array("prenom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "ajax"=>function(InputValueAccessor $valueAccessor){
@@ -163,7 +175,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -185,7 +197,7 @@ class MyOwnDependencyRuleWithComplexProcess extends Dependency{
      *
      * @return bool 
      */
-    public function is_confirmed(){
+    public function is_confirmed( InputValueAccessor $accessor ){
         return false===true;
     }
     public function __toJavascript(){
@@ -195,7 +207,9 @@ EOD;
         return "'".$this->accessor->data_source_target."'";
     }
 }
-$in_values = array("prenom"=>"");
+$input_values = new InputValues( 
+        array("prenom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "required"=>new MyOwnDependencyRuleWithComplexProcess()
@@ -206,7 +220,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, complex process rule", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -217,7 +231,9 @@ assert_true("'nom' is a required argument, complex process rule", $message->mess
 /*******************************************************************************
  * 
  */
-$in_values = array("prenom"=>"");
+$input_values = new InputValues( 
+        array("prenom"=>"")
+        );
 $options = array('rules' => array(
                     'nom' => array(
                         "somecallback"=>function(InputValueAccessor $valueAccessor){
@@ -230,7 +246,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -241,7 +257,9 @@ assert_true("'nom' is a required argument, ajaxified", $message->message==='Bad 
 /*******************************************************************************
  * @todo finir ce test
  */
-$in_values = array("nom"=>array("","--"));
+$input_values = new InputValues( 
+        array("nom"=>array("","--"))
+        );
 $options = array('rules' => array(
                     'nom[]' => array(
                         "required"=>true
@@ -252,7 +270,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -264,7 +282,9 @@ if( count($messages) > 0 ){
 /*******************************************************************************
  * @todo finir ce test
  */
-$in_values = array("nom"=>array("","--"));
+$input_values = new InputValues( 
+        array("nom"=>array("","--"))
+        );
 $options = array('rules' => array(
                     'nom\[\]' => array(
                         "required"=>true
@@ -275,7 +295,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();
@@ -287,7 +307,9 @@ if( count($messages) > 0 ){
 /*******************************************************************************
  * @todo finir ce test
  */
-$in_values = array("nom"=>array("test"=>"--"));
+$input_values = new InputValues( 
+        array("nom"=>array("test"=>"--"))
+        );
 $options = array('rules' => array(
                     'nom\[test\]' => array(
                         "required"=>true
@@ -298,7 +320,7 @@ $options = array('rules' => array(
                  ),
                 );
 $validator = new FormValidator("f_test_form", $options);
-$validator->setDataSource($in_values);
+$validator->setInputValues($input_values);
 $validator->validate();
 assert_true("'nom' is a required argument, ajaxified", $validator->hasErrors());
 $messages = $validator->getMessages();

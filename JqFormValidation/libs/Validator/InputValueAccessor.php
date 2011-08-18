@@ -153,6 +153,6 @@ class InputValueAccessor{
         $r = $this->input_values->getDataSource($this->input_values_source);
         if( $this->is_set($this->input_values_source) )
             return $r[$this->resolved_data_source_target];
-        throw new Exception("Key ".$this->resolved_data_source_target." doesnt exists in ".$this->input_values_source." data source");
+        throw new \Exception("Key ".$this->resolved_data_source_target." doesnt exists in ".$this->input_values_source." data source");
     }
 }

@@ -4,7 +4,7 @@ namespace BricEtBroc\Form;
 use BricEtBroc\Form\Validator as Validator;
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
 
-class Rule{
+class RuleValidator{
     public $elementTarget;
     public $validators;
     public $validators_errors;

@@ -4,8 +4,7 @@
 include("../libs/__include_files.php");
 
 use BricEtBroc\Form\FormValidator as FormValidator;
-use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
-use BricEtBroc\Form\Dependency as Dependency;
+use BricEtBroc\Form\InputValues as InputValues;
 
 $options = array('rules' => array(
                     'testfield' => 'required',
@@ -14,7 +13,7 @@ $options = array('rules' => array(
 $validator = new FormValidator("f_testform", $options);
 
 if( $_SERVER['REQUEST_METHOD'] === "POST" ){
-    $validator->setDataSource($_POST);
+    $validator->setInputValues(new InputValues($_POST) );
     $validator->validate();
     if( $validator->hasErrors() === false ){
         echo "ok";
@@ -35,6 +34,37 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
             <br/>
             <input type="submit" value="Submit !" />
         </form>
+        <script type="text/javascript">
+            $("form[name=f_testform]").find("input[name=testfield]").keypress(
+                function(event){
+                    if( trim( doGetCaretPosition(this), String.fromCharCode(event.keyCode)) == false ){
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            function doGetCaretPosition (ctrl) {
+                var CaretPos = 0;	// IE Support
+                if (document.selection){
+                    ctrl.focus ();
+                    var Sel = document.selection.createRange ();
+                    Sel.moveStart ('character', -ctrl.value.length);
+                    CaretPos = Sel.text.length;
+                }
+                // Firefox support
+                else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+                CaretPos = ctrl.selectionStart;
+                return (CaretPos);
+            }
+            function trim(caretIndex, newChar ){
+                if( caretIndex === 0 && newChar === " " ){
+                    return false;
+                }
+                return true;
+            }
+        </script>
         <?php echo $validator->__toHTML(); ?>
     </body>
 </html>

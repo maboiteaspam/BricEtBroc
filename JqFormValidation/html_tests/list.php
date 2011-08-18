@@ -4,8 +4,7 @@
 include("../libs/__include_files.php");
 
 use BricEtBroc\Form\FormValidator as FormValidator;
-use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
-use BricEtBroc\Form\Dependency as Dependency;
+use BricEtBroc\Form\InputValues as InputValues;
 
 $options = array('rules' => array(
                     'testfield[]' => 'required',
@@ -14,7 +13,7 @@ $options = array('rules' => array(
 $validator = new FormValidator("f_testform", $options);
 
 if( $_SERVER['REQUEST_METHOD'] === "POST" ){
-    $validator->setDataSource($_POST);
+    $validator->setInputValues(new InputValues($_POST) );
     $validator->validate();
     if( $validator->hasErrors() === false ){
         echo "ok";
