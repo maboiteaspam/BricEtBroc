@@ -1,4 +1,5 @@
 <?php
+namespace BricEtBroc\Form;
 
 class RuleFilter{
     public $elementTarget;
@@ -37,20 +38,10 @@ class RuleFilter{
     
     /**
      *
-     * @param array|null $remote_filters_id
      * @return bool
      */
-    public function filter($remote_filters_id=NULL){
-        $filters = array();
-        if( $remote_filters_id === NULL ){
-            $filters = $this->filters;
-        }else{
-            foreach( $this->filters as $name=>$validator ){
-                if( in_array($validator->getIdentifier( ), $remote_filters_id) ){
-                    $filters[$name] = $validator;
-                }
-            }
-        }
+    public function filter(){
+        $filters = $this->filters;
         foreach( $filters as $name=>$filter ){
             $filter->filter();
         }
@@ -59,7 +50,12 @@ class RuleFilter{
     
     public function __toJavascript(){
         $retour = "";
-        
+        $retour .= "'".$this->elementTarget."':";
+        $retour .= "{";
+            foreach( $this->filters as $v_name=>$v )
+            $retour .= "'".$v_name."':".$v->__toJavascript().", ";
+        $retour = substr($retour,0,-2);
+        $retour .= "}";
         
         return $retour;
     }

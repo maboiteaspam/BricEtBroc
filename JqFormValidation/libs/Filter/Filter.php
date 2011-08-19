@@ -57,7 +57,7 @@ abstract class Filter{
      * @param InputValueAccessor $accessor
      */
     public function filter( ){
-        return $this->filter_value( $this->accessor );
+        return $this->filter_value( $this->accessor, $this->assert_information );
     }
     
     /**
@@ -65,10 +65,21 @@ abstract class Filter{
      * @param InputValueAccessor $accessor
      * @return bool
      */
-    public abstract function filter_value( InputValueAccessor $accessor );
+    public abstract function filter_value( InputValueAccessor $accessor, $assert );
     
     public function __toJavascript(){
         $assert = "";
+
+        if(is_object($this->assert_information) )
+            $assert = "'".strval($this->assert_information)."'";
+        elseif(is_bool($this->assert_information) )
+            $assert = $this->assert_information===true?"true":"false";
+        elseif(is_int($this->assert_information) )
+            $assert = $this->assert_information;
+        elseif(is_array($this->assert_information) )
+            $assert = "'".var_export($this->assert_information, true)."'";
+        else
+            $assert = "'".$this->assert_information."'";
         
         return $assert;
     }

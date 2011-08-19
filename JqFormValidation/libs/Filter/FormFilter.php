@@ -1,4 +1,5 @@
 <?php
+namespace BricEtBroc\Form;
 
 class FormFilter{
     public $targetElement;
@@ -22,9 +23,18 @@ class FormFilter{
         $this->rules            = array();
         $this->rules_errors     = array();
         
-        $filters_ref = isset($options["filters"])?$options["filters"]:NULL;
-        $this->filter_finder    = new ValidatorFinder($filters_ref);
+        $filters_ref            = isset($options["filters"])?$options["filters"]:NULL;
+        $this->filter_finder    = new FilterFinder($filters_ref);
         $this->has_parsed       = false;
+    }
+    
+    /**
+     *
+     * @param Form $Form 
+     */
+    public function attachTo( Form $Form ){
+        $Form->listenTo("before_validate", $this, "filter");
+        $this->setInputValues($Form->input_values);
     }
     
     /**
@@ -41,8 +51,9 @@ class FormFilter{
      * @return bool
      */
     public function parseOptions(){
-        $rules      = isset($this->options["filter"])? $this->options["filter"] : array();
-        
+        $this->has_parsed = true;
+        $rules      = $this->options;
+        unset( $rules["filters"] );
         foreach( $rules as $elementTarget => $filters ){
             if( isset( $this->rules[$elementTarget]) ) $oRule = $this->rules[$elementTarget];
             else{ $oRule = new RuleFilter($elementTarget); $this->rules[$elementTarget] = $oRule; }
@@ -76,33 +87,47 @@ class FormFilter{
                 $oRule->addFilter($filter_name, $oFilter);
             }
         }
-        $this->has_parsed = true;
         return true;
     }
     
     
     /**
      *
-     * @param array|string|null $remote_filters_id
      * @return type 
      */
-    public function filter( $remote_filters_id=NULL ){
+    public function filter( ){
         if( ! $this->has_parsed )
             $this->parseOptions ();
         
-        if( $remote_filters_id!==NULL 
-            && is_array($remote_filters_id) === false )
-            $remote_filters_id = array($remote_filters_id);
-        
         foreach( $this->rules as $name=>$rule ){
-            $rule->filter( $remote_filters_id );
+            $rule->filter(  );
         }
         
         return true;
     }
     
+    public function __optionsToJavascript(){
+        if( ! $this->has_parsed )
+            $this->parseOptions ();
+        $retour = "";
+        $retour .= "{ ";
+        
+        foreach( $this->rules as $rule ){
+            $retour .= "\n".$rule->__toJavascript().",\n";
+        }
+        $retour = substr($retour,0,-strlen(",\n"));
+        $retour .= " }\n";
+        
+        return $retour;
+    }
+    
     public function __toHTML( $surrounded = true ){
         $retour = "";
+        
+        $options = $this->__optionsToJavascript();
+        $retour = '
+            $("form[name='.$this->targetElement.']").filtertext('.$options.');
+            ';
         
         if( $surrounded ){
             $retour = '<script type="text/javascript">'.$retour.'</script>';

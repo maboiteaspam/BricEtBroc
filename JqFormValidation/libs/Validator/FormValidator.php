@@ -52,6 +52,7 @@ class FormValidator{
      * @return bool
      */
     public function parseOptions(){
+        $this->has_parsed = true;
         $rules      = isset($this->options["rules"])? $this->options["rules"] : array();
         $messages   = isset($this->options["messages"])? $this->options["messages"] : array();
         
@@ -101,7 +102,6 @@ class FormValidator{
                 $oRule->addValidator($validator_name, $oValidator);
             }
         }
-        $this->has_parsed = true;
         return true;
     }
     

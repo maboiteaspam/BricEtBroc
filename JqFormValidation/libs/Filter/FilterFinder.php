@@ -6,7 +6,6 @@ class FilterFinder{
         "trim"      =>"BricEtBroc\Form\TrimFilter",
         "nohtml"    =>"BricEtBroc\Form\NoHTMLFilter",
         "nochars"   =>"BricEtBroc\Form\NoCharsFilter",
-        "remote"    =>"BricEtBroc\Form\RemoteFilter",
     );
     
     /**

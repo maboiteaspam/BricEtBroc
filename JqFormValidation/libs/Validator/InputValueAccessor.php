@@ -148,6 +148,12 @@ class InputValueAccessor{
         return isset( $r[$this->resolved_data_source_target] );
     }
     
+    public function set($value){
+        $r = $this->input_values->getDataSource($this->input_values_source);
+        $r[$this->resolved_data_source_target] = $value;
+        $this->input_values->setDataSource($r, $this->input_values_source);
+    }
+    
     public function read( ){
         $this->resolve_jq_expr();
         $r = $this->input_values->getDataSource($this->input_values_source);

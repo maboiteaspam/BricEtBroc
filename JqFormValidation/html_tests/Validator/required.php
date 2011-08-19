@@ -1,14 +1,14 @@
 <?php
 
 
-include("../libs/__include_files.php");
+include("../../libs/__include_files.php");
 
 use BricEtBroc\Form\FormValidator as FormValidator;
 use BricEtBroc\Form\InputValues as InputValues;
 
 $options = array('rules' => array(
-                    'testfield[]' => 'required',
-                    ),
+                    'testfield' => 'required',
+                    )
                 );
 $validator = new FormValidator("f_testform", $options);
 
@@ -23,17 +23,14 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
 ?>
 <html>
     <head>
-        <script type="text/javascript" src="../vendors/jquery-validation/lib/jquery-1.6.1.js"></script>
-        <script type="text/javascript" src="../vendors/jquery-validation/lib/jquery.form.js"></script>
-        <script type="text/javascript" src="../vendors/jquery-validation/jquery.validate.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation/lib/jquery-1.6.1.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation/lib/jquery.form.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation/jquery.validate.js"></script>
     </head>
     <body>
         <form name="f_testform" method="POST" action="">
             <label for="testfield">Input field</label>
-            <input type="text" name="testfield[]" id="testfield3" value="" />
-            <br/>
-            <label for="testfield2">Input field 2</label>
-            <input type="text" name="testfield[]" id="testfield2" value="" />
+            <input type="text" name="testfield" id="testfield" value="" />
             <br/>
             <input type="submit" value="Submit !" />
         </form>
