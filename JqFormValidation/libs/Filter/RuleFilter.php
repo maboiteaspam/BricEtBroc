@@ -1,7 +1,11 @@
 <?php
 namespace BricEtBroc\Form;
 
-class RuleFilter{
+use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+use BricEtBroc\Form\Filter as Filter;
+use BricEtBroc\Form\IJavascripter as IJavascripter;
+
+class RuleFilter implements IJavascripter{
     public $elementTarget;
     public $filters;
     /**

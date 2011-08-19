@@ -2,8 +2,9 @@
 namespace BricEtBroc\Form;
 
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+use BricEtBroc\Form\IJavascripter as IJavascripter;
 
-abstract class Filter{
+abstract class Filter implements IJavascripter{
     /**
      *
      * @var mixed

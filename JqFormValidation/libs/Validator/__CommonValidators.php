@@ -1,6 +1,8 @@
 <?php
 namespace BricEtBroc\Form;
 
+use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+
 class RequiredValidator extends Validator{
     public function validate_value( InputValueAccessor $valueAccessor, $is_required ){
         if( $is_required === false ) return true;

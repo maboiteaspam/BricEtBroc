@@ -1,6 +1,8 @@
 <?php
 namespace BricEtBroc\Form;
 
+use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+
 class TrimFilter extends Filter{
     public function filter_value( InputValueAccessor $valueAccessor, $do_trim ){
         if( $valueAccessor->is_set() == false ) return;

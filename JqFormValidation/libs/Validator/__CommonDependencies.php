@@ -1,6 +1,8 @@
 <?php
 namespace BricEtBroc\Form;
 
+use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+
 class CheckedDependency extends Dependency{
     public function is_confirmed( InputValueAccessor $valueAccessor ){
         return $valueAccessor->is_set();

@@ -1,7 +1,17 @@
 <?php
 namespace BricEtBroc\Form;
 
-class FormFilter{
+
+use BricEtBroc\Form\RuleFilter as RuleFilter;
+use BricEtBroc\Form\FilterFinder as FilterFinder;
+use BricEtBroc\Form\InputValues as InputValues;
+use BricEtBroc\Form\CallbackFilter as CallbackFilter;
+use BricEtBroc\Form\Form as Form;
+
+use BricEtBroc\Form\IHtmlWriter as IHtmlWriter;
+use BricEtBroc\Form\IFormComponent as IFormComponent;
+
+class FormFilter implements IFormComponent, IHtmlWriter{
     public $targetElement;
     public $options;
     

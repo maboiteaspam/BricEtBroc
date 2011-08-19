@@ -1,7 +1,8 @@
 <?php
 namespace BricEtBroc\Form;
+use BricEtBroc\Form\IJavascripter as IJavascripter;
 
-abstract class Dependency{
+abstract class Dependency implements IJavascripter{
     /**
      *
      * @var InputValueAccessor 

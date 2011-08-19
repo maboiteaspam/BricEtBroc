@@ -52,7 +52,13 @@ class Form{
         return true;
     }
     
-    public function listenTo( $listened_event, $listener_component, $component_call ){
+    /**
+     *
+     * @param string $listened_event
+     * @param IFormComponent $listener_component
+     * @param string $component_call 
+     */
+    public function listenTo( $listened_event, IFormComponent $listener_component, $component_call ){
         $component_name = array_shift( array_keys($this->components, $listener_component) );
         
         if( isset($this->listeners[$listened_event]) === false )
@@ -60,6 +66,12 @@ class Form{
         $this->listeners[$listened_event][$component_name] = $component_call;
     }
     
+    /**
+     *
+     * @param string $method_name
+     * @param array $method_arguments
+     * @return mixed 
+     */
     public function __call($method_name, $method_arguments){
         $retour = array();
         if( isset($this->listeners["before_".$name]) ){

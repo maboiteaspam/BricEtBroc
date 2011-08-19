@@ -3,8 +3,9 @@ namespace BricEtBroc\Form;
 
 use BricEtBroc\Form\Validator as Validator;
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
+use BricEtBroc\Form\IJavascripter as IJavascripter;
 
-class RuleValidator{
+class RuleValidator implements IJavascripter{
     public $elementTarget;
     public $validators;
     public $validators_errors;

@@ -1,14 +1,17 @@
 <?php
+include("IFormComponent.php");
+include("IHtmlWriter.php");
+include("IJavascripter.php");
 
-include("Form.php");
+include("Form/Form.php");
+include("Form/Message.php");
+include("Form/InputValueAccessor.php");
+include("Form/InputValues.php");
 
 include("Validator/FormValidator.php");
-include("Validator/InputValueAccessor.php");
-include("Validator/InputValues.php");
 include("Validator/RuleValidator.php");
 include("Validator/Validator.php");
 include("Validator/ValidatorFinder.php");
-include("Validator/Message.php");
 include("Validator/Dependency.php");
 
 include("Validator/__CommonValidators.php");

@@ -9,8 +9,10 @@ use BricEtBroc\Form\Dependency as Dependency;
 use BricEtBroc\Form\Message as Message;
 use BricEtBroc\Form\Messages as Messages;
 use BricEtBroc\Form\RuleValidator as RuleValidator;
+use BricEtBroc\Form\Form as Form;
+use BricEtBroc\Form\IFormComponent as IFormComponent;
 
-class FormValidator{
+class FormValidator implements IFormComponent, IHtmlWriter{
     public $targetElement;
     public $options;
     
@@ -37,6 +39,15 @@ class FormValidator{
         $dep_ref = isset($options["dependencies"])?$options["dependencies"]:NULL;
         $this->validator_finder = new ValidatorFinder($val_ref, $dep_ref);
         $this->has_parsed       = false;
+    }
+    
+    /**
+     *
+     * @param Form $Form 
+     */
+    public function attachTo( Form $Form ){
+        $Form->listenTo("before_validate", $this, "filter");
+        $this->setInputValues($Form->input_values);
     }
     
     /**
@@ -139,7 +150,7 @@ class FormValidator{
      *
      * @return Messages
      */
-    public function getMessages(){
+    public function getErrors(){
         $retour = new Messages();
         foreach( $this->rules_errors as $rule_name=>$rule ){
             /* @var $rule RuleValidator */

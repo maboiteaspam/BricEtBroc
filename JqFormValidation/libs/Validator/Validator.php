@@ -3,8 +3,9 @@ namespace BricEtBroc\Form;
 
 use BricEtBroc\Form\InputValueAccessor as InputValueAccessor;
 use BricEtBroc\Form\Dependency as Dependency;
+use BricEtBroc\Form\IJavascripter as IJavascripter;
 
-abstract class Validator{
+abstract class Validator implements IJavascripter{
     /**
      *
      * @var mixed
