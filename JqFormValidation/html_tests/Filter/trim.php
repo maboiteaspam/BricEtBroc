@@ -7,7 +7,7 @@ use BricEtBroc\Form\FormFilter as FormFilter;
 use BricEtBroc\Form\InputValues as InputValues;
 
 $options = array('testfield' => 'trim');
-$filter = new FormFilter("f_testform", $options);
+$filter = new FormFilter("f_testform", array("filter"=>$options));
 
 if( $_SERVER['REQUEST_METHOD'] === "POST" ){
     $in_values = new InputValues($_POST);

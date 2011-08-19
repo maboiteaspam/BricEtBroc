@@ -18,13 +18,13 @@ class FormFilter{
      */
     public function __construct( $targetElement, $options ){
         $this->targetElement    = $targetElement;
-        $this->options          = $options;
         $this->input_values     = new InputValues( array() );
         $this->rules            = array();
-        $this->rules_errors     = array();
         
         $filters_ref            = isset($options["filters"])?$options["filters"]:NULL;
         $this->filter_finder    = new FilterFinder($filters_ref);
+        unset( $options["filters"] );
+        $this->options          = $options;
         $this->has_parsed       = false;
     }
     
@@ -52,8 +52,8 @@ class FormFilter{
      */
     public function parseOptions(){
         $this->has_parsed = true;
-        $rules      = $this->options;
-        unset( $rules["filters"] );
+        $rules      = $this->options["filter"];
+        
         foreach( $rules as $elementTarget => $filters ){
             if( isset( $this->rules[$elementTarget]) ) $oRule = $this->rules[$elementTarget];
             else{ $oRule = new RuleFilter($elementTarget); $this->rules[$elementTarget] = $oRule; }
