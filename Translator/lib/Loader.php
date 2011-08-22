@@ -11,9 +11,10 @@ class Loader{
     protected $translations_dirs;
     protected $cache_path;
     
-    public function __construct( $translations_dirs, $cache_path ){
-        $this->translations_dirs = $translations_dirs;
-        $this->cache_path = $cache_path;
+    public function __construct( $translations_dirs, $cache_path){
+        $this->translations_dirs    = $translations_dirs;
+        $this->cache_path           = $cache_path;
+        $this->locale_containers    = array();
     }
     
     public function buildFilesList( $locale ){
@@ -31,7 +32,6 @@ class Loader{
 
         unset( $this->locale_containers[$locale] );
         $Container = new Container( $this->load_files($translations_files) );
-        $Container->setLocale( $locale );
         $this->locale_containers[$locale] = $Container;
         return $Container;
     }
