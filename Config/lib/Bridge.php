@@ -22,7 +22,7 @@ class Bridge{
                     $curent_config  = Cache::load($cache_path, $path_to_config_file);
                 }else{
                     $loader  = FileLoader::loadFile($path_to_config_file);
-                    Cache::save($cache_path, $path_to_config_file, $loader);
+                    Cache::save($cache_path, $loader);
                     $curent_config = $loader->getData();
                 }
                 $retour = array_merge( $retour, $curent_config );
