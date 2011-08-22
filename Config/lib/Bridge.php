@@ -10,7 +10,7 @@ class Bridge{
     /**
      * Connect \BricEtBroc\Bridge
      *
-     * @return BricEtBroc\Container
+     * @return BricEtBroc\Config\Container
      */
     public static function connect($path_to_config_files=array(), $cache_path=null ){
         $retour = array();

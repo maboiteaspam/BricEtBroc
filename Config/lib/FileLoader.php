@@ -16,7 +16,7 @@ class FileLoader{
      *
      * @var array
      */
-    protected $loaded_config;
+    protected $loaded_data;
     /**
      *
      * @var string
@@ -44,7 +44,7 @@ class FileLoader{
      * @return array|null
      */
     public function getData(){
-        return $this->loaded_config;
+        return $this->loaded_data;
     }
     
     /**
@@ -70,10 +70,10 @@ class FileLoader{
     public function load( ){
         $this->merged_files     = array();
         $this->merged_files[]   = $this->initial_path;
-        $config = sfYaml::load($this->initial_path);
-        $config = $this->lookup_for_externals($config, $this->initial_path);
-        $this->loaded_config = $config;
-        return $this->loaded_config;
+        $data = sfYaml::load($this->initial_path);
+        $data = $this->lookup_for_externals($data, $this->initial_path);
+        $this->loaded_data = $data;
+        return $this->loaded_data;
     }
     
     /**
