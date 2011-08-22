@@ -42,6 +42,8 @@ class Loader{
      * @param type $translations_files 
      */
     public function getContainer( $locale ){
+        if( isset($this->locale_containers[$locale]) === false )
+            $this->buildTranslations( $locale );
         return $this->locale_containers[$locale];
     }
     
