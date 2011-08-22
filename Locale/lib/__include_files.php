@@ -1,4 +1,5 @@
 <?php
 
 include("Finder.php");
-include("URLNegotiater.php");
+include("Negotiater.php");
+include("Manager.php");
