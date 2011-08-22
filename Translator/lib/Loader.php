@@ -8,7 +8,6 @@ use BricEtBroc\Translator\FileLoader as FileLoader;
 class Loader{
     
     protected $locale_containers;
-    protected $translations_files;
     protected $translations_dirs;
     protected $cache_path;
     
@@ -17,38 +16,46 @@ class Loader{
         $this->cache_path = $cache_path;
     }
     
-    /**
-     *
-     * @param type $locale
-     * @param type $translations_files 
-     */
-    public function getTranslations( $locale, $translations_files ){
-        $this->translations_files[$locale] = $translations_files;
+    public function buildFilesList( $locale ){
+        $retour = array();
+        $retour[] = strtolower(substr($locale,0,2)).".php";
+        if( substr($locale,0,2) != substr($locale,3) ){
+            $retour[] = substr($locale,0,2)."_".  strtoupper(substr($locale,0,2)).".php";
+        }
+        $retour[] = $locale.".php";
+        return $retour;
+    }
+    
+    public function buildTranslations( $locale ){
+        $translations_files = $this->buildFilesList($locale);
+
         unset( $this->locale_containers[$locale] );
-        $data = $this->load_files($locale);
-        $Container = new Container( $data );
+        $Container = new Container( $this->load_files($translations_files) );
         $Container->setLocale( $locale );
         $this->locale_containers[$locale] = $Container;
         return $Container;
     }
     
+    /**
+     *
+     * @param type $locale
+     * @param type $translations_files 
+     */
+    public function getContainer( $locale ){
+        return $this->locale_containers[$locale];
+    }
     
-    protected function load_files($locale){
-        $translations = array();
-        $cache_path = $this->cache_path;
+    
+    protected function load_files($translations_files){
+        $translations   = array();
+        $cache_path     = $this->cache_path;
         foreach( $this->translations_dirs as $tr_dir ){
-            foreach( $this->translations_files[$locale] as $translation_file ){
-                $curent_translation = array();
+            foreach( $translations_files as $translation_file ){
+                $current_translation = array();
                 $path_to_translation_file = $tr_dir.$translation_file;
                 if(file_exists($path_to_translation_file) ){
-                    if( Cache::isFresh($cache_path, $path_to_translation_file) ){
-                        $curent_translation  = Cache::load($cache_path, $path_to_translation_file);
-                    }else{
-                        $loader  = FileLoader::loadFile($path_to_translation_file);
-                        Cache::save($cache_path, $loader);
-                        $curent_translation = $loader->getData();
-                    }
-                    $translations = array_merge( $translations, $curent_translation );
+                    $current_translation = include($path_to_translation_file);
+                    $translations = array_merge( $translations, $current_translation );
                 }
             }
         }
