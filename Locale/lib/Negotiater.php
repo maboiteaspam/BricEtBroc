@@ -62,9 +62,7 @@ class Negotiater{
                     $best_locale = $this->best_locale;
             }
         }else{
-            if( in_array($best_locale, $this->allowed_langs) ){
-                return $best_locale;
-            }else{
+            if( ! in_array($best_locale, $this->allowed_langs) ){
                 $best_locale    = $this->get_a_locale_for_a_lang( substr($best_locale,0,2) );
                 if( $best_locale === null ){
                     $best_locale = $this->get_first_locale();
