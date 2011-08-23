@@ -32,6 +32,10 @@ class CachedLoader{
         }
     }
     
+    public function getLoader(){
+        return $this->loader;
+    }
+    
     public function invalidate(){
         $this->response     = null;
         $this->loaded_cache = null;
