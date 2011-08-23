@@ -71,7 +71,11 @@ class FileLoader{
         $this->merged_files     = array();
         $this->merged_files[]   = $this->initial_path;
         $data = sfYaml::load($this->initial_path);
-        $data = $this->lookup_for_externals($data, $this->initial_path);
+        if( is_array($data) ){
+            $data = $this->lookup_for_externals($data, $this->initial_path);
+        }else{
+            $data = array();
+        }
         $this->loaded_data = $data;
         return $this->loaded_data;
     }
@@ -83,7 +87,8 @@ class FileLoader{
      * @return type 
      */
     protected function lookup_for_externals($config, $file_path){
-        $recurse = new Super_Array_walk_recursive($config, array($this,'detect_and_load_external'), dirname($file_path)."" );
+        $user_values    = dirname($file_path)."";
+        $recurse        = new Super_Array_walk_recursive($config, array($this,'detect_and_load_external'), $user_values );
         if( $recurse->input ){
             return $recurse->input;
         }
@@ -103,12 +108,16 @@ class FileLoader{
                     $external_file = substr($item,3);
                     $this->merged_files[] = $external_file;
                     $config = sfYaml::load($external_file);
-                    $config = $this->lookup_for_externals($config, $relative_config_dir);
+                    if( is_array($config) ){
+                        $config = $this->lookup_for_externals($config, $relative_config_dir);
+                    }
                 }else{
                     $external_file = $relative_config_dir."/".substr($item,3);
                     $this->merged_files[] = $external_file;
                     $config = sfYaml::load($external_file);
-                    $config = $this->lookup_for_externals($config, $relative_config_dir);
+                    if( is_array($config) ){
+                        $config = $this->lookup_for_externals($config, $relative_config_dir);
+                    }
                 }
                 if( is_array($config) ) $item = $config;
             }
