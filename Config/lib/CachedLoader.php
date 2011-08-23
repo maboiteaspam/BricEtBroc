@@ -1,4 +1,5 @@
 <?php
+namespace BricEtBroc\Config;
 
 /**
  * Description of CachedLoader

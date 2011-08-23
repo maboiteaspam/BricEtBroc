@@ -1,7 +1,6 @@
 <?php
 namespace BricEtBroc\Config;
 
-use \sfYaml as sfYaml;
 use BricEtBroc\Config\FileLoader as FileLoader;
 
 /**
