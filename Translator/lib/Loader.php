@@ -26,7 +26,7 @@ class Loader implements ILoader{
     
     public function reset(){
         $this->builded_lists        = array();
-        $this->dependant_files      = array();
+        $this->files_to_load        = array();
         $this->container            = null;
     }
     
@@ -99,8 +99,8 @@ class Loader implements ILoader{
     
     public function setLocale( $locale ){
         if( $locale != $this->locale ){
-            $this->buildFilesListForLocale( $locale );
             $this->reset();
+            $this->buildFilesListForLocale( $locale );
         }
         $this->locale = $locale;
     }
