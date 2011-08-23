@@ -3,11 +3,11 @@ namespace BricEtBroc\Locale;
 use BricEtBroc\Locale\Finder as Finder;
 
 class Negotiater{
-    protected $allowed_langs;
+    protected $allowed_locales;
     protected $negotiated_locale;
     protected $best_locale;
-    public function __construct( $allowed_langs ){
-        $this->allowed_langs  = $allowed_langs;
+    public function __construct( $allowed_locales ){
+        $this->allowed_locales  = $allowed_locales;
     }
     
     public function set_best_locale( $best_locale ){
@@ -28,7 +28,7 @@ class Negotiater{
     
     
     protected function get_a_locale_for_a_lang( $lang ){
-        foreach( $this->allowed_langs as $allowed_lang => $allowed_locale ){
+        foreach( $this->allowed_locales as $allowed_lang => $allowed_locale ){
             if( $allowed_lang == $lang ){
                 return $allowed_locale;
             }
@@ -36,9 +36,9 @@ class Negotiater{
         return null;
     }
     protected function get_first_locale( ){
-        if( count($this->allowed_langs) > 0 ){
-            $keys = array_keys($this->allowed_langs);
-            return $this->allowed_langs[ $keys[0] ];
+        if( count($this->allowed_locales) > 0 ){
+            $keys = array_keys($this->allowed_locales);
+            return $this->allowed_locales[ $keys[0] ];
         }
         return null;
     }
@@ -62,7 +62,7 @@ class Negotiater{
                     $best_locale = $this->best_locale;
             }
         }else{
-            if( ! in_array($best_locale, $this->allowed_langs) ){
+            if( ! in_array($best_locale, $this->allowed_locales) ){
                 $best_locale    = $this->get_a_locale_for_a_lang( substr($best_locale,0,2) );
                 if( $best_locale === null ){
                     $best_locale = $this->get_first_locale();
