@@ -11,6 +11,7 @@ interface ILoader{
     public function addPathToLoadDir( $path_to_config_dir, $at_the_end=true );
     public function listOfFiles( );
     public function completeListOfFiles( );
+    public function load( );
     public function createResponse( array $data );
 }
 
