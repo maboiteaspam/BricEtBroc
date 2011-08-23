@@ -1,14 +1,15 @@
 <?php
 namespace BricEtBroc\Config;
 
-use BricEtBroc\Config\FileLoader as FileLoader;
+use \BricEtBroc\Config\FileLoader as FileLoader;
+use \BricEtBroc\FilesLoader\ILoader as ILoader;
 
 /**
  * Description of Loader
  *
  * @author clement
  */
-class Loader {
+class Loader implements ILoader{
     protected $path_to_config_dirs;
     protected $files_to_load;
     protected $builded_lists;
@@ -38,7 +39,7 @@ class Loader {
         return false;
     }
     
-    public function addPathToConfigDir( $path_to_config_dir, $at_the_end=true ){
+    public function addPathToLoadDir( $path_to_config_dir, $at_the_end=true ){
         if( in_array($path_to_config_dir, $this->path_to_config_dirs) === false ){
             $this->reset();
             if( $at_the_end )
@@ -58,17 +59,6 @@ class Loader {
             }
         }
         return $retour;
-    }
-    
-    public function buildUniqueName( $list_of_files ){
-        $retour = implode("|", $list_of_files);
-        return sha1($retour);
-    }
-    
-    public function uniqueName(){
-        if( $this->unique_name === null )
-            $this->unique_name = $this->buildUniqueName($this->listOfFiles());
-        return $this->unique_name;
     }
     
     public function listOfFiles(){
@@ -91,6 +81,20 @@ class Loader {
         }
         return $data;
     }
+    
+    public function completeListOfFiles(){
+        $retour = $this->listOfFiles();
+        foreach( $this->listOfDependantFiles() as $file => $dpdt_files ){
+            $retour = array_merge($retour, $dpdt_files);
+        }
+        return $retour;
+    }
+    
+    public function createResponse( array $data ){
+        return new Container($data);
+    }
+    
+    public function get(){
+        return $this->createResponse( $this->load() );
+    }
 }
-
-?>
