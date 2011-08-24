@@ -2,106 +2,55 @@
 namespace BricEtBroc\Translator;
 
 use \BricEtBroc\Translator\Container as Container;
-use \BricEtBroc\FilesLoader\ILoader as ILoader;
+use \BricEtBroc\FilesLoader\MergedIncludesCacherLoader as MergedIncludesCacherLoader;
+use \BricEtBroc\FilesLoader\MergedIncludesLoader as MergedIncludesLoader;
+use BricEtBroc\Cache\ICache as ICache;
 
 /**
  * Description of Loader
  *
  * @author clement
  */
-class Loader implements ILoader{
+class Loader{
     
-    protected $path_to_load_dirs;
-    protected $files_to_load;
-    protected $builded_lists;
-    protected $container;
-    
+    protected $config_loader;
+    protected $cacher;
+    protected $containers;
     protected $locale;
     
-    public function __construct( $translations_dirs ){
-        $this->path_to_load_dirs    = $translations_dirs;
-        $this->files_to_load        = array();
-        $this->locale               = "";
+    public function __construct( $runtime_config, $path_to_load_dirs=array(), $files_to_load=array() ){
+        $this->config_loader    = new MergedIncludesLoader($runtime_config, $path_to_load_dirs, $files_to_load );
+        $this->locale           = null;
+        $this->containers       = array();
     }
-    
-    public function reset(){
-        $this->builded_lists        = array();
-        $this->container            = null;
-    }
-    
     public function addFileToLoad( $file_to_load, $at_the_end=true ){
-        if( in_array($file_to_load, $this->files_to_load) === false ){
-            $this->reset();
-            if( $at_the_end )
-                $this->files_to_load[] = $file_to_load;
-            else
-                array_unshift ($this->files_to_load, $file_to_load);
+        if( $this->config_loader->addFileToLoad( $file_to_load, $at_the_end ) ){
+            if( isset($this->containers[$this->locale]) )
+                unset($this->containers[$this->locale]);
             return true;
         }
         return false;
     }
     
     public function addPathToLoadDir( $path_to_config_dir, $at_the_end=true ){
-        if( in_array($path_to_load_dir, $this->path_to_load_dirs) === false ){
-            $this->reset();
-            if( $at_the_end )
-                $this->path_to_load_dirs[] = $path_to_load_dir;
-            else
-                array_unshift ($this->path_to_load_dirs, $path_to_load_dir);
+        if( $this->config_loader->addPathToLoadDir( $path_to_config_dir, $at_the_end ) ){
+            if( isset($this->containers[$this->locale]) )
+                unset($this->containers[$this->locale]);
             return true;
         }
         return false;
     }
     
-    public function buildListOfFiles($path_to_config_dirs, $files_to_load){
-        $retour = array();
-        foreach( $path_to_config_dirs as $path_to_config_dir ){
-            foreach ($files_to_load as $file_to_load ){
-                $retour[] = $path_to_config_dir.$file_to_load;
-            }
-        }
-        return $retour;
-    }
-    
-    public function listOfFiles( ){
-        if( count($this->builded_lists) == 0 )
-            $this->builded_lists = $this->buildListOfFiles($this->path_to_load_dirs, $this->files_to_load);
-        return $this->builded_lists;
-    }
-    
-    public function completeListOfFiles( ){
-        return $this->listOfFiles();
-    }
-    
-    public function load(){
-        $files  = $this->listOfFiles();
-        $data   = array();
-        foreach( $files as $file ){
-            if(file_exists($file) ){
-                $current_data = include($file);
-                $data = array_merge($data, $current_data);
-            }
-        }
-        return $data;
-    }
-    
-    public function createResponse( array $data ){
-        return new Container($data);
-    }
-    
-    public function get(){
-        if( $this->container === null ){
-            $this->container = $this->createResponse( $this->load() );
-        }
-        return $this->container;
+    public function setCacher( ICache $cacher ){
+        $this->cacher = $cacher;
     }
     
     public function setLocale( $locale ){
-        if( $locale != $this->locale ){
-            $this->files_to_load = array();
+        if( trim($locale) !== ""
+                && $locale !== $this->locale ){
             $this->buildFilesListForLocale( $locale );
+            $this->locale = $locale;
         }
-        $this->locale = $locale;
     }
     
     public function buildFilesListForLocale( $locale ){
@@ -111,6 +60,21 @@ class Loader implements ILoader{
             $this->addFileToLoad(substr($locale,0,2)."_".  strtoupper(substr($locale,0,2)).".php");
         }
         $this->addFileToLoad( $locale.".php");
-        return $this->files_to_load;
+    }
+    
+    public function get(){
+        if( $this->locale === null )
+            return new Container();
+        if( isset($this->containers[$this->locale]) === false ){
+            $data = array();
+            if( $this->cacher === null ){
+                $data = $this->config_loader->load();
+            }else{
+                $loader_cacher  = new MergedIncludesCacherLoader($this->config_loader, $this->cacher);
+                $data           = $loader_cacher->load();
+            }
+            $this->containers[$this->locale] = new Container($data);
+        }
+        return $this->containers[$this->locale];
     }
 }
