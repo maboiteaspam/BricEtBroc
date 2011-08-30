@@ -173,7 +173,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
                     }
                 }
                 
-                $retour[] = $message;
+                $retour[$rule->elementTarget] = $message;
             }
         }
         return $retour;
@@ -182,20 +182,39 @@ class FormValidator implements IFormComponent, IHtmlWriter{
     public function __optionsToJavascript(){
         if( ! $this->has_parsed )
             $this->parseOptions ();
-        $temp = "";
-        $temp .= "'rules':{ ";
-        foreach( $this->rules as $rule ){
-            $temp .= "\n".$rule->__toJavascript().",\n";
-        }
-        $temp = substr($temp,0,-strlen(",\n"));
-        $temp .= " }\n";
         
+        $temp = "";
+        if( count($this->rules) > 0 ){
+            $temp .= "'rules':{ ";
+            foreach( $this->rules as $rule ){
+                $temp .= "\n".$rule->__toJavascript().",\n";
+            }
+            $temp = substr($temp, 0, -strlen(",\n"));
+            $temp .= " }\n";
+        }
+        
+        $retour = $temp;
+        if( isset($this->options["messages"]) ){
+            $retour .= ",".json_encode($this->options["messages"])."\n";
+        }
+        $retour .= ",'errorPlacement':function(error, element){
+                var el = $('#error-' + element.attr('id') );
+                if( el.length > 0 ){
+                    error.appendTo( el );
+                }
+            }";
+        $retour .= ",'debug':true";
+        
+        
+        /*
         $orules = $this->options["rules"];
         $this->options["rules"] = "----";
         $retour = json_encode($this->options);
         $this->options["rules"] = $orules;
         $retour = str_replace('"rules":"----"', $temp, $retour);
-        return $retour;
+         */
+        
+        return "{".$retour."}";
     }
     
     public function __toHTML( $surrounded = true ){
@@ -205,11 +224,81 @@ class FormValidator implements IFormComponent, IHtmlWriter{
         $retour = '
             $("form[name='.$this->targetElement.']").validate('.$options.');
             ';
+        $retour = '
+            $(document).ready(function(){'.$retour.'});
+            ';
         
         if( $surrounded ){
             $retour = '<script type="text/javascript">'.$retour.'</script>';
         }
         
         return $retour;
+    }
+    
+    public function render( $has_validated, \DOMDocument $doc ){
+        $xpath      = new \DOMXpath($doc);
+        $elements   = $xpath->query("/html/head");
+        
+        $messages   = new Messages();
+        $has_errors = false;
+        if( $has_validated ){
+            $has_errors = $this->hasErrors();
+            $messages   = $this->getErrors();
+        }
+
+        if ( $elements->length > 0 ) {
+            //$elements
+            $script = $doc->createElement ('script');
+            // Creating an empty text node forces <script></script>
+            $script->appendChild( $doc->createTextNode ( $this->__toHTML(false) ) );
+            $elements->item(0)->appendChild ($script);
+            
+            if( count($messages)> 0 ){
+                $no_script_styles = "";
+                foreach( $messages as $elementTarget=>$message ){
+                    $no_script_styles .= "#error-".$elementTarget."{display:block;}";
+                }
+                $no_script = $doc->createElement ('noscript');
+                $no_script->appendChild( $doc->createTextNode ( $no_script_styles ) );
+                $elements->item(0)->appendChild ($no_script);
+            }
+        }
+        
+        foreach( $this->rules as $elementTarget => $rule ){
+            $error_el   = $xpath->query("//*[@id='error-".$elementTarget."']");
+            $el         = null;
+            if( $error_el === false ){
+                $el = $doc->createElement ('span');
+                $el->setAttribute( "id", "error-".$elementTarget );
+                $el->setAttribute( "class", "error-element");
+                
+                $input_el   = $xpath->query("//form[@name='".$this->targetElement."']//[@name='".$elementTarget."']");
+                if( $input_el !== false ){
+                    if( $input_el->length > 0 ){
+                        $input_el->item(0)->parentNode->insertBefore($el, $input_el->item(0));
+                    }
+                }
+            }else if( $error_el->length === 0 ){
+                $el = $doc->createElement ('span');
+                $el->setAttribute( "id", "error-".$elementTarget );
+                $el->setAttribute( "class", "error-element");
+                $input_el   = $xpath->query("//form[@name='".$this->targetElement."']//*[@name='".$elementTarget."']");
+                if( $input_el !== false ){
+                    if( $input_el->length > 0 ){
+                        $input_el->item(0)->parentNode->insertBefore($el, $input_el->item(0));
+                    }
+                }
+            }
+            
+            if( $el === null ){
+                $el = $error_el->item(0);
+            }
+            
+            if( $has_validated && $has_errors && isset($messages[$elementTarget]) ){
+                $el->appendChild( $doc->createTextNode ( $messages[$elementTarget]->value ) );
+            }
+        }
+        
+        return $doc;
     }
 }

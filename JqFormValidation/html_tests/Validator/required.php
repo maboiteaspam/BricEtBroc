@@ -23,9 +23,9 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
 ?>
 <html>
     <head>
-        <script type="text/javascript" src="../../vendors/jquery-validation/lib/jquery-1.6.1.js"></script>
-        <script type="text/javascript" src="../../vendors/jquery-validation/lib/jquery.form.js"></script>
-        <script type="text/javascript" src="../../vendors/jquery-validation/jquery.validate.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation-1.9.0pre/lib/jquery-1.6.1.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation-1.9.0pre/lib/jquery.form.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation-1.9.0pre/jquery.validate.js"></script>
     </head>
     <body>
         <form name="f_testform" method="POST" action="">

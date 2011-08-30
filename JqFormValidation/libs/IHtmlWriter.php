@@ -9,4 +9,3 @@ interface IHtmlWriter {
     public function __toHTML( $surrounded = true );
 }
 
-?>

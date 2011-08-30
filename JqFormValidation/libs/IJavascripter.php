@@ -9,4 +9,3 @@ interface IJavascripter {
     public function __toJavascript( );
 }
 
-?>

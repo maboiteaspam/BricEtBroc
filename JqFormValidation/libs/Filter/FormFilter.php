@@ -62,6 +62,9 @@ class FormFilter implements IFormComponent, IHtmlWriter{
      */
     public function parseOptions(){
         $this->has_parsed = true;
+        if( isset($this->options["filter"]) === false ){
+            return;
+        }
         $rules      = $this->options["filter"];
         
         foreach( $rules as $elementTarget => $filters ){
@@ -133,10 +136,16 @@ class FormFilter implements IFormComponent, IHtmlWriter{
     
     public function __toHTML( $surrounded = true ){
         $retour = "";
+        if( isset($this->options["filter"]) === false ){
+            return $retour;
+        }
         
         $options = $this->__optionsToJavascript();
         $retour = '
             $("form[name='.$this->targetElement.']").filtertext('.$options.');
+            ';
+        $retour = '
+            $(document).ready(function(){'.$retour.'});
             ';
         
         if( $surrounded ){
@@ -146,4 +155,20 @@ class FormFilter implements IFormComponent, IHtmlWriter{
         return $retour;
     }
     
+    public function render( $has_validated, \DOMDocument $doc ){
+        if( isset($this->options["filter"]) === false ){
+            return $doc;
+        }
+        $xpath      = new \DOMXpath($doc);
+        $elements   = $xpath->query("/html/head");
+
+        if ( $elements->length > 0 ) {
+            //$elements
+            $script = $doc->createElement ('script');
+            // Creating an empty text node forces <script></script>
+            $script->appendChild( $doc->createTextNode ( $this->__toHTML(false) ) );
+            $elements->item(0)->appendChild ($script);
+        }
+        return $doc;
+    }
 }

@@ -8,6 +8,7 @@ use BricEtBroc\Form\Form as Form;
  */
 interface IFormComponent {
     public function attachTo( Form $Form );
+    public function render( $has_validated, \DOMDocument $response_content );
 }
 
 ?>

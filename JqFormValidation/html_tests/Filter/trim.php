@@ -19,7 +19,7 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ){
 ?>
 <html>
     <head>
-        <script type="text/javascript" src="../../vendors/jquery-validation/lib/jquery-1.6.1.js"></script>
+        <script type="text/javascript" src="../../vendors/jquery-validation-1.9.0pre/lib/jquery-1.6.1.js"></script>
         <script type="text/javascript" src="../../libs/Filter/jquery.filtertext.js"></script>
     </head>
     <body>

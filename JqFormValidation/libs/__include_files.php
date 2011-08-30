@@ -23,3 +23,8 @@ include("Filter/FilterFinder.php");
 include("Filter/FormFilter.php");
 include("Filter/RuleFilter.php");
 include("Filter/__CommonFilters.php");
+
+include("SeaSurf/FormSeaSurf.php");
+
+include("Tooltip/FormTooltip.php");
+include("PostSubmit/FormPostSubmit.php");
