@@ -19,8 +19,8 @@ class SimplePhp implements ITranslator{
      * @param array $values 
      */
     public function translate( $message_id, $values=array() ){
-        if( isset($this->messages[$message_id]) )
-            return vsprintf ( $this->messages[$message_id] , $values );
-        return $message_id;
+        if( isset($this->messages[$message_id])===false)
+            return $message_id;
+        return vsprintf ( $this->messages[$message_id] , $values );
     }
 }

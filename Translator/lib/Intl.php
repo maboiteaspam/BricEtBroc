@@ -19,8 +19,8 @@ class Intl implements ITranslator{
      * @param array $values 
      */
     public function translate( $message_id, $values=array() ){
-        if( isset($message_id) ===false ){
-            return "";
+        if( isset($this->messages[$message_id]) === false ){
+            return $message_id;
         }
         
         if( is_string($this->messages[$message_id]) ){
