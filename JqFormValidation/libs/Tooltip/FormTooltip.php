@@ -1,7 +1,6 @@
 <?php
 namespace BricEtBroc\Form;
 
-use BricEtBroc\Form\IHtmlWriter as IHtmlWriter;
 use BricEtBroc\Form\IFormComponent as IFormComponent;
 
 /**
@@ -9,7 +8,7 @@ use BricEtBroc\Form\IFormComponent as IFormComponent;
  *
  * @author clement
  */
-class FormTooltip implements IFormComponent, IHtmlWriter {
+class FormTooltip implements IFormComponent {
     public $targetElement;
     public $options;
     public $parsed_options;

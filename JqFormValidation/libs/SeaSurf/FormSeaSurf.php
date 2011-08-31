@@ -1,7 +1,6 @@
 <?php
 namespace BricEtBroc\Form;
 
-use BricEtBroc\Form\IHtmlWriter as IHtmlWriter;
 use BricEtBroc\Form\IFormComponent as IFormComponent;
 
 /**
@@ -16,6 +15,7 @@ class FormSeaSurf implements IFormComponent {
     public $input_values;
     public $salt;
     
+    public $token;
     public $has_parsed;
     
     
@@ -36,7 +36,8 @@ class FormSeaSurf implements IFormComponent {
      * @param Form $Form 
      */
     public function attachTo( Form $Form ){
-        $Form->listenTo("before_filter", $this, "check_seasurf");
+        $Form->listenTo("required_to_validate", $this, "check_seasurf");
+        $Form->listenTo("before_render", $this, "generateCSRFToken");
         $this->setInputValues($Form->input_values);
     }
     
@@ -92,15 +93,19 @@ class FormSeaSurf implements IFormComponent {
         if( $_SERVER["REQUEST_METHOD"] !== "POST" ){
             return false;
         }
+        
         if( isset($_SESSION["_ck_csrf_tokens"]) === false ){
             return false;
         }
+        
         if( isset($_SESSION["_ck_csrf_tokens"][$this->targetElement]) === false ){
             return false;
         }
+        
         if( $this->input_values->getAccessor("seasurf_token")->is_set() === false ){
             return false;
         }
+        
         $time           = time();
         $birthday_token = $_SESSION["_ck_csrf_tokens"][$this->targetElement]['token_time'];
         
@@ -138,14 +143,14 @@ class FormSeaSurf implements IFormComponent {
             'token'=>$token_value,
             'token_time'=>time(),
         );
-        return $token_value;
+        $this->token = $token_value;
     }
         
     public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         $xpath      = new \DOMXpath($doc);
         $elements   = $xpath->query("//form[@name='".$this->targetElement."']");
         
-        $new_token = $this->generateCSRFToken();
+        $new_token = $this->token;
         
         if ( $elements->length > 0) {
             $csrf_el   = $xpath->query("//imput[@name='seasurf_token']", $elements->item(0));

@@ -12,7 +12,7 @@ use BricEtBroc\Form\RuleValidator as RuleValidator;
 use BricEtBroc\Form\Form as Form;
 use BricEtBroc\Form\IFormComponent as IFormComponent;
 
-class FormValidator implements IFormComponent, IHtmlWriter{
+class FormValidator implements IFormComponent{
     public $targetElement;
     public $options;
     

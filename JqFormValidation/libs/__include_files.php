@@ -1,6 +1,5 @@
 <?php
 include("IFormComponent.php");
-include("IHtmlWriter.php");
 include("IJavascripter.php");
 
 include("Form/Form.php");
@@ -28,3 +27,4 @@ include("SeaSurf/FormSeaSurf.php");
 
 include("Tooltip/FormTooltip.php");
 include("PostSubmit/FormPostSubmit.php");
+include("Replacer/FormReplacer.php");

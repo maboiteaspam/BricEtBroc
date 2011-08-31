@@ -8,7 +8,7 @@ class Form{
     public $has_parsed;
     public $input_values;
     
-    public $components_ref = array(
+    public $default_components_ref = array(
         "postsubmit"    =>"BricEtBroc\Form\FormPostSubmit",
         "csrf"          =>"BricEtBroc\Form\FormSeaSurf",
         "filtration"    =>"BricEtBroc\Form\FormFilter",
@@ -16,6 +16,7 @@ class Form{
         //"error"         =>"BricEtBroc\Form\FormTooltip",
     );
     
+    public $components_to_load;
     public $components;
     public $pending_listeners;
     public $listeners;
@@ -25,7 +26,7 @@ class Form{
      * @param string $targetElement
      * @param array $options 
      */
-    public function __construct( $targetElement, $method, $options, $components=array() ){
+    public function __construct( $targetElement, $method, $options, $components_ref=array() ){
         $this->targetElement= $targetElement;
         $this->options      = $options;
         $this->has_parsed   = false;
@@ -33,7 +34,19 @@ class Form{
         $this->input_values = new InputValues( strtolower($method)==="post"?$_POST:$_GET );
         $this->input_values->setDataSource($_FILES, "files");
         
-        $this->components_ref = array_merge( $this->components_ref, $components );
+        $this->setComponentsRef( array_merge( $this->default_components_ref, $components_ref ) );
+    }
+    
+    public function setOptions( $options ){
+        $this->options = $options;
+    }
+    
+    public function setComponentsRef( $components_ref ){
+        $this->components_to_load   = $components_ref;
+        $this->components           = array();
+        $this->has_parsed           = false;
+        $this->pending_listeners    = array();
+        $this->listeners            = array();
     }
     
     /**
@@ -43,7 +56,7 @@ class Form{
     public function initComponents(){
         $this->has_parsed   = true;
         
-        foreach( $this->components_ref as $component_name => $component_class ){
+        foreach( $this->components_to_load as $component_name => $component_class ){
             $component = new $component_class( $this->targetElement, $this->options );
             $component->attachTo( $this );
             $this->components[ $component_name ] = $component;
@@ -82,12 +95,30 @@ class Form{
     public function __call($method_name, $method_arguments){
         if( $this->has_parsed === false ) $this->initComponents ();
         
+        $cancel = false;
+        if( isset($this->listeners["required_to_".$method_name]) ){
+            foreach( $this->listeners["required_to_".$method_name] as $component_name => $component_invocation ){
+                $required_status = call_user_func_array($component_invocation, array());
+                if( $required_status === false ){
+                    $cancel = true;
+                    break;
+                }
+            }
+        }
+        
+        if( $cancel ){
+            return false;
+        }
+        
+        
         $retour = array();
         if( isset($this->listeners["before_".$method_name]) ){
             foreach( $this->listeners["before_".$method_name] as $component_name => $component_invocation ){
                 call_user_func_array($component_invocation, array());
             }
         }
+        
+        
         
         foreach( $this->components as $component_name => $component ){
             if(method_exists($component, $method_name) ){

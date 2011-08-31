@@ -8,10 +8,9 @@ use BricEtBroc\Form\InputValues as InputValues;
 use BricEtBroc\Form\CallbackFilter as CallbackFilter;
 use BricEtBroc\Form\Form as Form;
 
-use BricEtBroc\Form\IHtmlWriter as IHtmlWriter;
 use BricEtBroc\Form\IFormComponent as IFormComponent;
 
-class FormFilter implements IFormComponent, IHtmlWriter{
+class FormFilter implements IFormComponent{
     public $targetElement;
     public $options;
     
