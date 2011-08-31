@@ -9,7 +9,7 @@ class Form{
     public $input_values;
     
     public $components_ref = array(
-        "postsumbit"    =>"BricEtBroc\Form\FormPostSubmit",
+        "postsubmit"    =>"BricEtBroc\Form\FormPostSubmit",
         "csrf"          =>"BricEtBroc\Form\FormSeaSurf",
         "filtration"    =>"BricEtBroc\Form\FormFilter",
         "validation"    =>"BricEtBroc\Form\FormValidator",
@@ -25,7 +25,7 @@ class Form{
      * @param string $targetElement
      * @param array $options 
      */
-    public function __construct( $targetElement, $method, $options ){
+    public function __construct( $targetElement, $method, $options, $components=array() ){
         $this->targetElement= $targetElement;
         $this->options      = $options;
         $this->has_parsed   = false;
@@ -33,11 +33,7 @@ class Form{
         $this->input_values = new InputValues( strtolower($method)==="post"?$_POST:$_GET );
         $this->input_values->setDataSource($_FILES, "files");
         
-        $components         = isset($options["components"])? $options["components"] : array();
-        unset( $this->options["components"]);
-        
         $this->components_ref = array_merge( $this->components_ref, $components );
-        
     }
     
     /**
