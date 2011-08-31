@@ -13,9 +13,8 @@ class InputValues{
      * @param string $data_source_name 
      * @param bool $isTextual 
      */
-    public function __construct( array $values, $data_source_name=InputValues::DFT_SRCE, $isTextual=true ){
+    public function __construct( ){
         $this->data_sources = array();
-        $this->setDataSource( $values, $data_source_name, $isTextual );
     }
     
     /**
@@ -57,6 +56,15 @@ class InputValues{
     public function getAccessor( $target ){
         $retour = new InputValueAccessor( $target );
         $retour->setInputValues($this);
+        return $retour;
+    }
+    
+    
+    public function compact( ){
+        $retour = array();
+        foreach( $this->data_sources as $source_name => $source_infos ){
+            $retour[$source_name] = $source_infos["content"];
+        }
         return $retour;
     }
 }

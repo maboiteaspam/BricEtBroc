@@ -31,7 +31,7 @@ class FormValidator implements IFormComponent{
     public function __construct( $targetElement, $options ){
         $this->targetElement    = $targetElement;
         $this->options          = $options;
-        $this->input_values     = new InputValues( array() );
+        $this->input_values     = new InputValues( );
         $this->rules            = array();
         $this->rules_errors     = array();
         

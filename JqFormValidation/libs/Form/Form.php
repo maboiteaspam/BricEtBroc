@@ -31,10 +31,18 @@ class Form{
         $this->options      = $options;
         $this->has_parsed   = false;
         $this->components   = array();
-        $this->input_values = new InputValues( strtolower($method)==="post"?$_POST:$_GET );
+        $this->input_values = new InputValues( );
+        if( strtolower($method)==="post" )
+            $this->input_values->setDataSource($_POST);
+        else
+            $this->input_values->setDataSource($_GET);
         $this->input_values->setDataSource($_FILES, "files");
         
         $this->setComponentsRef( array_merge( $this->default_components_ref, $components_ref ) );
+    }
+    
+    public function compactInputvalues( ){
+        return $this->input_values->compact();
     }
     
     public function setOptions( $options ){

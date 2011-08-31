@@ -27,7 +27,7 @@ class FormFilter implements IFormComponent{
      */
     public function __construct( $targetElement, $options ){
         $this->targetElement    = $targetElement;
-        $this->input_values     = new InputValues( array() );
+        $this->input_values     = new InputValues( );
         $this->rules            = array();
         
         $filters_ref            = isset($options["filters"])?$options["filters"]:NULL;

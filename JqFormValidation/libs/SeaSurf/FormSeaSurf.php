@@ -26,7 +26,7 @@ class FormSeaSurf implements IFormComponent {
      */
     public function __construct( $targetElement, $options ){
         $this->targetElement    = $targetElement;
-        $this->input_values     = new InputValues( array() );
+        $this->input_values     = new InputValues( );
         $this->options          = $options;
         $this->has_parsed       = false;
     }
