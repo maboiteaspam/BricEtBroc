@@ -203,16 +203,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
                     error.appendTo( el );
                 }
             }";
-        $retour .= ",'debug':true";
-        
-        
-        /*
-        $orules = $this->options["rules"];
-        $this->options["rules"] = "----";
-        $retour = json_encode($this->options);
-        $this->options["rules"] = $orules;
-        $retour = str_replace('"rules":"----"', $temp, $retour);
-         */
+        //$retour .= ",'debug':true";
         
         return "{".$retour."}";
     }
@@ -249,6 +240,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
         if ( $elements->length > 0 ) {
             //$elements
             $script = $doc->createElement ('script');
+            $script->setAttribute("type", "text/javascript");
             // Creating an empty text node forces <script></script>
             $script->appendChild( $doc->createTextNode ( $this->__toHTML(false) ) );
             $elements->item(0)->appendChild ($script);

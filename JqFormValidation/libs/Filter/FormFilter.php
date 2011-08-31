@@ -165,6 +165,7 @@ class FormFilter implements IFormComponent, IHtmlWriter{
         if ( $elements->length > 0 ) {
             //$elements
             $script = $doc->createElement ('script');
+            $script->setAttribute("type", "text/javascript");
             // Creating an empty text node forces <script></script>
             $script->appendChild( $doc->createTextNode ( $this->__toHTML(false) ) );
             $elements->item(0)->appendChild ($script);
