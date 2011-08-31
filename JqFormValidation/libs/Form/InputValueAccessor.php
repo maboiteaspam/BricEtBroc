@@ -139,7 +139,7 @@ class InputValueAccessor{
     }
     
     public function is_textual( ){
-        $this->input_values->isTextual($this->input_values_source);
+        return $this->input_values->isTextual($this->input_values_source);
     }
     
     public function is_set( ){

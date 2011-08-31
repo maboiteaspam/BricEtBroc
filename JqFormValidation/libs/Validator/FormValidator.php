@@ -46,7 +46,6 @@ class FormValidator implements IFormComponent, IHtmlWriter{
      * @param Form $Form 
      */
     public function attachTo( Form $Form ){
-        $Form->listenTo("before_validate", $this, "filter");
         $this->setInputValues($Form->input_values);
     }
     
@@ -161,6 +160,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
                         && $rule->getAccessor()->is_textual()
                         && $rule->getAccessor()->is_list() === false )
                     $message->value     = $rule->getAccessor()->read();
+                
                 $message->message   = "";
                 if( isset($this->options["messages"]) ){
                     if( isset($this->options["messages"][$rule_name]) ){
@@ -185,36 +185,44 @@ class FormValidator implements IFormComponent, IHtmlWriter{
         
         $temp = "";
         if( count($this->rules) > 0 ){
-            $temp .= "'rules':{ ";
+            $temp .= "\n'rules':{ ";
             foreach( $this->rules as $rule ){
-                $temp .= "\n".$rule->__toJavascript().",\n";
+                $temp .= "\n\t".$rule->__toJavascript().",\n";
             }
             $temp = substr($temp, 0, -strlen(",\n"));
-            $temp .= " }\n";
+            $temp .= "\n}";
         }
         
         $retour = $temp;
         if( isset($this->options["messages"]) ){
-            $retour .= ",".json_encode($this->options["messages"])."\n";
+            $retour .= ",\n".substr(json_encode(array("messages"=>$this->options["messages"])),1,-1)."";
         }
-        $retour .= ",'errorPlacement':function(error, element){
-                var el = $('#error-' + element.attr('id') );
-                if( el.length > 0 ){
-                    error.appendTo( el );
-                }
-            }";
+        $retour .= ",\n'errorPlacement':function(error, element){
+    var el = $('#error-' + element.attr('id') );
+    if( el.length > 0 ){
+        error.appendTo( el );
+    }
+}";
         //$retour .= ",'debug':true";
         
         return "{".$retour."}";
     }
     
-    public function __toHTML( $surrounded = true ){
+    public function __toHTML( $surrounded = true, $is_submitted = false ){
         $retour = "";
         
         $options = $this->__optionsToJavascript();
         $retour = '
             $("form[name='.$this->targetElement.']").validate('.$options.');
             ';
+        if( $is_submitted ){
+            $retour .= '
+                $(".error-element").empty();
+                ';
+            $retour .= '
+                $("form[name='.$this->targetElement.']").valid();
+                ';
+        }
         $retour = '
             $(document).ready(function(){'.$retour.'});
             ';
@@ -226,7 +234,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
         return $retour;
     }
     
-    public function render( $has_validated, \DOMDocument $doc ){
+    public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         $xpath      = new \DOMXpath($doc);
         $elements   = $xpath->query("/html/head");
         
@@ -236,13 +244,14 @@ class FormValidator implements IFormComponent, IHtmlWriter{
             $has_errors = $this->hasErrors();
             $messages   = $this->getErrors();
         }
+        
 
         if ( $elements->length > 0 ) {
             //$elements
             $script = $doc->createElement ('script');
             $script->setAttribute("type", "text/javascript");
             // Creating an empty text node forces <script></script>
-            $script->appendChild( $doc->createTextNode ( $this->__toHTML(false) ) );
+            $script->appendChild( $doc->createTextNode ( $this->__toHTML(false, $is_submitted) ) );
             $elements->item(0)->appendChild ($script);
             
             if( count($messages)> 0 ){
@@ -287,7 +296,7 @@ class FormValidator implements IFormComponent, IHtmlWriter{
             }
             
             if( $has_validated && $has_errors && isset($messages[$elementTarget]) ){
-                $el->appendChild( $doc->createTextNode ( $messages[$elementTarget]->value ) );
+                $el->appendChild( $doc->createTextNode ( $messages[$elementTarget]->message ) );
             }
         }
         

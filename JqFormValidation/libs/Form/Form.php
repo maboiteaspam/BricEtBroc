@@ -17,6 +17,7 @@ class Form{
     );
     
     public $components;
+    public $pending_listeners;
     public $listeners;
     
     /**
@@ -52,6 +53,15 @@ class Form{
             $this->components[ $component_name ] = $component;
         }
         
+        foreach( $this->pending_listeners as $listened_event=> $components_invocation ){
+            foreach( $components_invocation as $component_invocation ){
+                if( isset($this->listeners[$listened_event]) === false )
+                    $this->listeners[$listened_event] = array();
+                $this->listeners[$listened_event][$component_name] = $component_invocation;
+            }
+        }
+        $this->pending_listeners = array();
+        
         return true;
     }
     
@@ -62,12 +72,9 @@ class Form{
      * @param string $component_call 
      */
     public function listenTo( $listened_event, IFormComponent $listener_component, $component_call ){
-        $keys = array_keys($this->components, $listener_component);
-        $component_name = array_shift( $keys );
-        
-        if( isset($this->listeners[$listened_event]) === false )
-            $this->listeners[$listened_event] = array();
-        $this->listeners[$listened_event][$component_name] = $component_call;
+        if( isset($this->pending_listeners[$listened_event]) === false )
+            $this->pending_listeners[$listened_event] = array();
+        $this->pending_listeners[$listened_event][] = array($listener_component, $component_call);
     }
     
     /**
@@ -77,14 +84,12 @@ class Form{
      * @return mixed 
      */
     public function __call($method_name, $method_arguments){
-        
         if( $this->has_parsed === false ) $this->initComponents ();
         
         $retour = array();
         if( isset($this->listeners["before_".$method_name]) ){
-            foreach( $this->listeners["before_".$method_name] as $component_name => $component_call ){
-                $component = $this->components[ $component_name ];
-                call_user_func_array(array($component, $component_call), array());
+            foreach( $this->listeners["before_".$method_name] as $component_name => $component_invocation ){
+                call_user_func_array($component_invocation, array());
             }
         }
         
@@ -96,9 +101,8 @@ class Form{
         
         
         if( isset($this->listeners["after_".$method_name]) ){
-            foreach( $this->listeners["after_".$method_name] as $component_name => $component_call ){
-                $component = $this->components[ $component_name ];
-                call_user_func_array(array($component, $component_call), array());
+            foreach( $this->listeners["after_".$method_name] as $component_name => $component_invocation ){
+                call_user_func_array($component_invocation, array());
             }
         }
         

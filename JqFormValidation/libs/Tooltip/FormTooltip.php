@@ -104,7 +104,7 @@ class FormTooltip implements IFormComponent, IHtmlWriter {
         return $retour;
     }
     
-    public function render( $has_validated, \DOMDocument $doc ){
+    public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         $xpath      = new \DOMXpath($doc);
         $elements   = $xpath->query("/html/head");
 

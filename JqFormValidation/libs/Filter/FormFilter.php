@@ -155,7 +155,7 @@ class FormFilter implements IFormComponent, IHtmlWriter{
         return $retour;
     }
     
-    public function render( $has_validated, \DOMDocument $doc ){
+    public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         if( isset($this->options["filter"]) === false ){
             return $doc;
         }

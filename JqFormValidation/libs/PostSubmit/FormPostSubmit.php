@@ -68,19 +68,22 @@ class FormPostSubmit implements IFormComponent {
         return sha1($this->targetElement);
     }
     
-    public function render( $has_validated, \DOMDocument $doc ){
+    public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         $xpath      = new \DOMXpath($doc);
         
         if( isset($this->options["rules"]) ){
             $elements   = $xpath->query("//form[@name='".$this->targetElement."']");
             if( $elements !== false && $elements->length > 0 ){
-                
-                if( $has_validated ){
+                if( $is_submitted ){
                     foreach( $this->options["rules"] as $elementTarget=>$infos ){
                         $input_el   = $xpath->query("//*[@name='".$elementTarget."']", $elements->item(0) );
                         if( $input_el!==false && $input_el->length > 0 ){
                             if( $this->input_values->getAccessor($elementTarget)->is_set() ){
-                                $input_el->item(0)->setAttribute("value", $this->input_values->getAccessor($elementTarget)->read());
+                                if( $input_el->item(0)->tagName == "input" ){
+                                    $input_el->item(0)->setAttribute("value", $this->input_values->getAccessor($elementTarget)->read());
+                                }else{
+                                    $input_el->item(0)->appendChild( $doc->createTextNode ( $this->input_values->getAccessor($elementTarget)->read() ) );
+                                }
                             }
                         }
                     }

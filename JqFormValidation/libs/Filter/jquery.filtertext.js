@@ -49,6 +49,23 @@ function filtertextClass( element, options ){
         if( this.stripHTMLTags(newValue) != newValue ){
             doCancel = true;
         }
+        
+        /*
+        var corrected_text = this.stripHTMLTags(this.element.value);
+        if( corrected_text != this.element.value ){
+            this.element.value = corrected_text;
+        }
+         */
+        return doCancel;
+    };
+    
+    this.liveRemoveHTMLTags = function(  newChar){
+        var doCancel    = false;
+        var corrected_text = this.stripHTMLTags(this.element.value);
+        if( corrected_text != this.element.value ){
+            this.element.value = corrected_text;
+            doCancel = true;
+        }
         return doCancel;
     };
     
@@ -92,6 +109,18 @@ function filtertextClass( element, options ){
                 function(event){
                     var filter      = $(this).data('filtertext');
                     var doCancel    = filter.liveStripHTMLTags( String.fromCharCode(event.keyCode) );
+                    if( doCancel ){
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            $(this.element).keyup(
+                function (event){
+                    var filter      = $(this).data('filtertext');
+                    var doCancel    = filter.liveRemoveHTMLTags( String.fromCharCode(event.keyCode) );
                     if( doCancel ){
                         event.stopPropagation();
                         event.preventDefault();
