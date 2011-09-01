@@ -66,9 +66,21 @@ class FormReplacer implements IFormComponent {
                 $form_node = $elements->item(0);
                 
                 $orgdoc = new \DOMDocument;
-                $orgdoc->loadHTML($this->replace_content);
-                $new_node = $doc->importNode($orgdoc->documentElement->firstChild->firstChild, true);
-                $form_node->parentNode->replaceChild( $new_node, $form_node );
+                /**
+                 * @todo check that is correct .... Or implement some more complicated logic
+                 */
+                $orgdoc->loadHTML(utf8_decode($this->replace_content));
+                $p_node     = $form_node->parentNode;
+                $c_nodes    = $orgdoc->documentElement->firstChild->childNodes;
+                for( $i=0; $i< $c_nodes->length; $i++ ){
+                    $new_node = $doc->importNode($c_nodes->item( $i ), true);
+                    if( $i === 0 ){
+                        $p_node->replaceChild( $new_node, $form_node );
+                        $nextNode = $new_node->nextSibling;
+                    }else{
+                        $p_node->insertBefore($new_node, $nextNode );
+                    }
+                }
             }
         
         return $doc;
