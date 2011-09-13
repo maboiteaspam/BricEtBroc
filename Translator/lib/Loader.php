@@ -18,8 +18,8 @@ class Loader{
     protected $containers;
     protected $locale;
     
-    public function __construct( $runtime_config, $path_to_load_dirs=array(), $files_to_load=array() ){
-        $this->config_loader    = new MergedIncludesLoader($runtime_config, $path_to_load_dirs, $files_to_load );
+    public function __construct( $path_to_load_dirs=array(), $files_to_load=array() ){
+        $this->config_loader    = new MergedIncludesLoader(array(), $path_to_load_dirs, $files_to_load );
         $this->locale           = null;
         $this->containers       = array();
     }
