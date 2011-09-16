@@ -48,8 +48,10 @@ class MergedConfigFilesLoader extends MergedIncludesLoader{
         $container = new Container( $data );
         array_walk_recursive($data, function (&$item, $key) use($container){
             if( is_string($item) ){
-                if( substr($item,0,3) === "::%" ){
-                    $item = $container->getByPath(substr($item,3));
+                if( preg_match_all("`\{[^}]+\}`U", $item, $out) > 0 ){
+                    foreach( $out as $o ){
+                        $item = str_replace($o, $container->getByPath(substr($o,0,-1)), $item);
+                    }
                 }
             }
         });
