@@ -37,7 +37,6 @@ class FormSeaSurf implements IFormComponent {
      */
     public function attachTo( Form $Form ){
         $Form->listenTo("required_to_validate", $this, "check_seasurf");
-        $Form->listenTo("before_render", $this, "generateCSRFToken");
         $this->setInputValues($Form->input_values);
     }
     
@@ -119,7 +118,7 @@ class FormSeaSurf implements IFormComponent {
         if( $in_token !== $correct_token ){
             return false;
         }
-        
+
         return true;
     }
     
@@ -144,13 +143,14 @@ class FormSeaSurf implements IFormComponent {
             'token_time'=>time(),
         );
         $this->token = $token_value;
+        return $this->token;
     }
         
     public function render( $is_submitted, $has_validated, \DOMDocument $doc ){
         $xpath      = new \DOMXpath($doc);
         $elements   = $xpath->query("//form[@name='".$this->targetElement."']");
         
-        $new_token = $this->token;
+        $new_token = $this->generateCSRFToken();
         
         if ( $elements->length > 0) {
             $csrf_el   = $xpath->query("//imput[@name='seasurf_token']", $elements->item(0));
