@@ -48,7 +48,7 @@ class RegexValidator extends Validator{
 class EmailValidator extends Validator{
     public function validate_value( InputValueAccessor $valueAccessor, $pattern ){
         $pattern = $pattern===true ?
-        "/^[a-z0-9!#$%&*+=?^_`{|}~-]+(\.[a-z0-9!#$%&*+-=?^_`{|}~]+)*@([-a-z0-9]+\.)+([a-z]{2,3}|info|arpa|aero|coop|name|museum)$/i"
+        "/^[a-z0-9!#$%&*+=?^_`{|}~-]+(\.[a-z0-9!#$%&*+-=?^_`{|}~]+)*@([-a-z0-9]+\.)+([a-z]+)$/i"
         : $pattern;
         return preg_match($pattern, $valueAccessor->read()) === 1;
     }
