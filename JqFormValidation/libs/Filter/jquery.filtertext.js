@@ -49,13 +49,6 @@ function filtertextClass( element, options ){
         if( this.stripHTMLTags(newValue) != newValue ){
             doCancel = true;
         }
-        
-        /*
-        var corrected_text = this.stripHTMLTags(this.element.value);
-        if( corrected_text != this.element.value ){
-            this.element.value = corrected_text;
-        }
-         */
         return doCancel;
     };
     
