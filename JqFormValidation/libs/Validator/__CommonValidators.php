@@ -95,7 +95,6 @@ class UrlValidator extends Validator{
 }
 
 class CallbackValidator extends Validator{
-    
     public function validate_value( InputValueAccessor $valueAccessor, $callback ){
         return call_user_func_array($callback, array($valueAccessor));
     }
@@ -112,7 +111,6 @@ class RemoteValidator extends CallbackValidator{
 }
 
 class FileUploadValidator extends Validator{
-    
     public function validate_value( InputValueAccessor $valueAccessor, $target_state ){
         $target_state = $target_state===true ?UPLOAD_ERR_OK:$target_state;
         $valueAccessor->setInputValuesSource("files");
@@ -123,7 +121,6 @@ class FileUploadValidator extends Validator{
 }
 
 class ImageUploadValidator extends Validator{
-    
     public function validate_value( InputValueAccessor $valueAccessor, $valid_types ){
         if (! extension_loaded('gd')) { return true; }
         
@@ -166,7 +163,6 @@ class ImageUploadValidator extends Validator{
 }
 
 class ExtUploadValidator extends Validator{
-    
     public function validate_value( InputValueAccessor $valueAccessor, $valid_exts ){
         $valueAccessor->setInputValuesSource("files");
         $files          = $valueAccessor->read();
