@@ -20,6 +20,7 @@ class FormValidator implements IFormComponent{
     public $rules_errors;
     public $input_values;
     public $validator_finder;
+    public $with_debug;
     
     public $has_parsed;
     
@@ -34,6 +35,7 @@ class FormValidator implements IFormComponent{
         $this->input_values     = new InputValues( );
         $this->rules            = array();
         $this->rules_errors     = array();
+        $this->with_debug       = false;
         
         $val_ref = isset($options["validators"])?$options["validators"]:NULL;
         $dep_ref = isset($options["dependencies"])?$options["dependencies"]:NULL;
@@ -65,6 +67,7 @@ class FormValidator implements IFormComponent{
         $this->has_parsed = true;
         $rules      = isset($this->options["rules"])? $this->options["rules"] : array();
         $messages   = isset($this->options["messages"])? $this->options["messages"] : array();
+        $this->with_debug = isset($this->options["debug"])? $this->options["debug"] : false;
         
         foreach( $rules as $elementTarget => $validators ){
             if( isset( $this->rules[$elementTarget]) ) $oRule = $this->rules[$elementTarget];
@@ -203,7 +206,8 @@ class FormValidator implements IFormComponent{
         error.appendTo( el );
     }
 }";
-        //$retour .= ",'debug':true";
+        if( $this->with_debug )
+            $retour .= ",'debug':true";
         
         return "{".$retour."}";
     }
