@@ -1,6 +1,15 @@
 <?php
 
 $print_success = isset($print_success)?$print_success:false;
+$print_closure = isset($print_closure)?$print_closure:false;
+
+
+if( !$print_closure ){
+    $test_suite_succeed = $test_suite_succeed_wc;
+    $test_suite_failed  = $test_suite_failed_wc;
+}
+
+
 
 $number_of_builded_request  = 0;
 $number_of_failed_request   = 0;

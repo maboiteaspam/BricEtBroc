@@ -48,6 +48,52 @@ function test_sql_build( $builded_result, $expected_result ){
     return trim($builded_result) === trim($expected_result);
 }
 
+
+
+$test_suite_tester = function($test_func, $test_result, $expected_result){
+    return test_sql_build($test_result, $expected_result);
+};
+
+
+$test_suite_failed = function($test_index, $test_func, $test_result, $expected_result){
+    echo "<b>Test has failed at index $test_index</b>";
+    new_line();
+    echo("Result is         ".$test_result);
+    new_line();
+    echo("Result should be  ".$expected_result);
+    new_line();
+};
+$test_suite_failed_wc = function($test_index, $test_func, $test_result, $expected_result){
+    $closure    = new SuperClosure($test_func);
+    $line       = $closure->startLine();
+    echo "<b>Test has failed at index $test_index, line $line</b>";
+    new_line();
+    echo("Closure is        ".substr($closure->getCode(),19,-2));
+    new_line();
+    echo("Result is         ".$test_result);
+    new_line();
+    echo("Result should be  ".$expected_result);
+    new_line();
+};
+
+$test_suite_succeed = function($test_index, $test_func, $test_result, $expected_result){
+    echo "Test has succeed at index $test_index";
+    new_line();
+    echo("Result is         ".$expected_result);
+};
+$test_suite_succeed_wc = function($test_index, $test_func, $test_result, $expected_result){
+    $closure    = new SuperClosure($test_func);
+    $line       = $closure->startLine();
+    echo "Test has succeed at index $test_index, line $line";
+    new_line();
+    echo("Closure is        ".substr($closure->getCode(),19,-2));
+    new_line();
+    echo("Result is         ".$expected_result);
+};
+
+
+
+
 class duration_recorder{
     public $time_start;
     public $check_points;
