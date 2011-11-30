@@ -334,7 +334,7 @@ class SelectBuilder{
             $this->_join_sources[$join_index]["on"][] = "{$col_left} {$operator} {$col_right} AND ";
             return $this;
         }
-        public function on_egual($col_left, $col_right=null) {
+        public function on_equal($col_left, $col_right=null) {
             return $this->on($col_left, "=", $col_right);
         }
         public function on_not_equal($col_left, $col_right=null) {

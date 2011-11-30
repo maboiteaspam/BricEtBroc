@@ -180,7 +180,7 @@ class ActiveModelBuilder{
                 //$target_class_annots    = $this->readActiveModel($target_class);
 
                 if( $this->isManyToMany($model_name, $prop->name, $target_info[0], $target_info[1]) ){
-                    $info = $this->makeManyToManyAccessor($prop_name, $model_name, $target_info[0], $target_info[1]);
+                    $info = $this->makeManyToManyAccessor($prop_name, $model_name, $target_info[0], $target_info[1], $on_target_prop);
                 }else{
                     $info = $this->makeOneToManyAccessor($model_name, $target_class, $target_prop, $on_target_prop);
                 }
@@ -201,7 +201,7 @@ class ActiveModelBuilder{
                 //$target_class_annots    = $this->readActiveModel($target_class);
 
                 if( $this->isManyToMany($model_name, $prop->name, $target_info[0], $target_info[1]) ){
-                    $info = $this->makeManyToManyAccessor($prop_name, $model_name, $target_info[0], $target_info[1]);
+                    $info = $this->makeManyToManyAccessor($prop_name, $model_name, $target_info[0], $target_info[1], $on_target_prop);
                 }else{
                     $info = $this->makeOneToManyAccessor($model_name, $target_class, $target_prop, $on_target_prop, true);
                 }
@@ -701,7 +701,7 @@ class ActiveModelBuilder{
     /**
      *
      */
-    protected function makeManyToManyAccessor($prop_name, $from, $to, $to_prop_name ){
+    protected function makeManyToManyAccessor($prop_name, $from, $to, $to_prop_name, $target_prop ){
         $getter = function (){
 
         };
@@ -726,11 +726,18 @@ class ActiveModelBuilder{
         }
         // from current class
 
+        $arr_target_prop = explode(".",$target_prop);
+        $target_prop = array(
+            "model"     =>$arr_target_prop[0],
+            "property"  =>$arr_target_prop[1],
+        );
+
         $retour = array();
         $retour["virutal_prop_infos"] = array(
             "type"          =>"has_many_to_many",
             "class"         =>$to,
             "own"           =>false,
+            "target"        =>$target_prop,
             "rel_tbl_name"  =>$rel_table_name,
             "rel_fields"    =>$rel_fields,
             "tgt_tbl_name"  =>$target_table,

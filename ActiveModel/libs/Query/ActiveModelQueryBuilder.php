@@ -295,7 +295,7 @@ class ActiveModelSelectBuilder{
         $this->_join_sources[] = array( "type"      =>"full_outer_join",
                                         "join"      =>$model,
                                         "as"        =>$model_alias,
-                                        "on"        =>null);
+                                        "on"        =>array());
         return $this;
     }
     /**
@@ -306,23 +306,23 @@ class ActiveModelSelectBuilder{
      */
     public function on($col_left, $col_right=null) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on",
                                                     "right"=>$col_right,
                                                 );
         return $this;
     }
-    public function on_egual($col_left, $col_right) {
+    public function on_equal($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
-                                                    "operator"=>"on_egual",
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
+                                                    "operator"=>"on_equal",
                                                     "right"=>$col_right,
                                                 );
         return $this;
     }
     public function on_not_equal($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_not_equal",
                                                     "right"=>$col_right,
                                                 );
@@ -330,7 +330,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_like($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_like",
                                                     "right"=>$col_right,
                                                 );
@@ -338,7 +338,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_not_like($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_not_like",
                                                     "right"=>$col_right,
                                                 );
@@ -346,7 +346,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_gt($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_gt",
                                                     "right"=>$col_right,
                                                 );
@@ -354,7 +354,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_lt($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_lt",
                                                     "right"=>$col_right,
                                                 );
@@ -362,7 +362,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_gte($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_gte",
                                                     "right"=>$col_right,
                                                 );
@@ -370,7 +370,7 @@ class ActiveModelSelectBuilder{
     }
     public function on_lte($col_left, $col_right) {
         $i = count($this->_join_sources);
-        $this->_join_sources[$i-1]["on"] = array(   "left"=>$col_left,
+        $this->_join_sources[$i-1]["on"][] = array( "left"=>$col_left,
                                                     "operator"=>"on_lte",
                                                     "right"=>$col_right,
                                                 );
@@ -641,96 +641,6 @@ class ActiveModelSelectBuilder{
         return $this;
     }
 
-
-
-    protected function normalizeInputParameterTarget( $input_target ){
-        $info = explode(".", $input_target);
-        if( trim($input_target) === "" ){
-            $retour = array(
-                "model"     =>null,
-                "property"  =>null,
-                "alias"     =>null,
-                "table"     =>null,
-            );
-        }else{
-            $info = explode(".", $input_target);
-            if( count($info) > 1 ){
-                $resolved_alias     = $this->resolve_alias($info[0]);
-                if( $resolved_alias === null ){
-                    if( $this->isAModel($info[0]) ){
-                        $retour = array(
-                            "model"     =>$info[0],
-                            "property"  =>$info[1],
-                            "alias"     =>null,
-                            "table"     =>null,
-                        );
-                    }else{
-                        $retour = array(
-                            "model"     =>null,
-                            "property"  =>$info[1],
-                            "alias"     =>null,
-                            "table"     =>$info[0],
-                        );
-                    }
-                }else{
-                    $retour = array(
-                        "model"     =>$resolved_alias,
-                        "property"  =>$info[1],
-                        "alias"     =>$info[0],
-                        "table"     =>null,
-                    );
-                }
-            }else{
-                $resolved_alias     = $this->resolve_alias($info[0]);
-                if( $resolved_alias === null ){
-                    if( $this->isAModel($info[0]) ){
-                        $retour = array(
-                            "model"     =>$info[0],
-                            "property"  =>null,
-                            "alias"     =>null,
-                            "table"     =>null,
-                        );
-                    }else{
-                        $models = $this->findModelsForAProperty($info[0]);
-                        if( count($models) > 0 ){
-                            $retour = array(
-                                "model"     =>$models[0]["model"],
-                                "property"  =>$info[0],
-                                "alias"     =>null,
-                                "table"     =>null,
-                            );
-                        }else{
-                            $retour = array(
-                                "model"     =>null,
-                                "property"  =>null,
-                                "alias"     =>null,
-                                "table"     =>$info[0],
-                            );
-                        }
-                    }
-                }else{
-                    if( $this->isAModel($resolved_alias) ){
-                        $retour = array(
-                            "model"     =>$resolved_alias,
-                            "property"  =>null,
-                            "alias"     =>$info[0],
-                            "table"     =>null,
-                        );
-                    }else{
-                        $retour = array(
-                            "model"     =>null,
-                            "property"  =>null,
-                            "alias"     =>null,
-                            "table"     =>$info[0],
-                        );
-                    }
-                }
-            }
-        }
-
-        return $retour;
-    }
-
     protected function isAModel( $model_name ){
         return ActiveModelController::is_a_model($model_name);
     }
@@ -748,7 +658,7 @@ class ActiveModelSelectBuilder{
         return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["fields"];
     }
 
-    protected function geLeftKeysOfManyToMany( $model, $property ){
+    protected function getLeftKeysOfManyToMany( $model, $property ){
         return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["rel_fields"];
     }
 
@@ -779,6 +689,8 @@ class ActiveModelSelectBuilder{
             return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["target"];
         }else{
             $target_class = $this->getClassTypeOfAProperty($model, $property);
+            if( $target_class === false )
+                return false;
             $this->loadModelInfos($target_class);
             // if target is precise
             foreach( $this->_models_infos[$target_class]["model_infos"]["virutal_prop_infos"] as $prop => $v_infos ){
@@ -802,15 +714,21 @@ class ActiveModelSelectBuilder{
     }
 
     protected function isHasMany( $model, $property ){
-        return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_many";
+        if( isset($this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"]) )
+            return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_many";
+        return false;
     }
 
     protected function isHasOne( $model, $property ){
-        return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_one";
+        if( isset($this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"]) )
+            return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_one";
+        return false;
     }
 
     protected function isHasManyToMany( $model, $property ){
-        return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_many_to_many";
+        if( isset($this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"]) )
+            return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][ $property ]["type"] === "has_many_to_many";
+        return false;
     }
 
     protected function getTarget( $model, $property ){
@@ -818,42 +736,8 @@ class ActiveModelSelectBuilder{
     }
 
     protected function getClassTypeOfAProperty( $model, $property ){
-        return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][$property]["class"];
-    }
-
-    protected function isManyToMany( $from_model, $to_model, $to_property ){
-        foreach($this->_models_infos[$from_model]["model_infos"]["virutal_prop_infos"] as $from_v_propinfos ){
-            if( $from_v_propinfos["class"]===$to_model && $from_v_propinfos["type"]==='has_many_to_many' ){
-                $to_v_propinfos = $this->_models_infos[$to_model]["model_infos"]["virutal_prop_infos"][$to_property];
-                if( $to_v_propinfos["class"]===$from_model && $to_v_propinfos["type"]==='has_many_to_many' ){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    protected function isOneToMany( $from_model, $to_model, $to_property ){
-        foreach($this->_models_infos[$from_model]["model_infos"]["virutal_prop_infos"] as $from_v_propinfos ){
-            if( $from_v_propinfos["class"]===$to_model && $from_v_propinfos["type"]==='has_many' ){
-                $to_v_propinfos = $this->_models_infos[$to_model]["model_infos"]["virutal_prop_infos"][$to_property];
-                if( $to_v_propinfos["class"]===$from_model && $to_v_propinfos["type"]==='has_one' ){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    protected function isManyToOne( $from_model, $to_model, $to_property ){
-        foreach($this->_models_infos[$from_model]["model_infos"]["virutal_prop_infos"] as $from_v_propinfos ){
-            if( $from_v_propinfos["class"]===$to_model && $from_v_propinfos["type"]==='has_one' ){
-                $to_v_propinfos = $this->_models_infos[$to_model]["model_infos"]["virutal_prop_infos"][$to_property];
-                if( $to_v_propinfos["class"]===$from_model && $to_v_propinfos["type"]==='has_many' ){
-                    return true;
-                }
-            }
-        }
+        if( isset($this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][$property]["class"]) )
+            return $this->_models_infos[$model]["model_infos"]["virutal_prop_infos"][$property]["class"];
         return false;
     }
 
@@ -886,196 +770,580 @@ class ActiveModelSelectBuilder{
         return $retour;
     }
 
-    public function resolve_alias( $input_target ){
-        if( $input_target === $this->_table_alias ){
+    public function resolve_alias( $input_alias ){
+        if( $input_alias === $this->_table_alias ){
             return $this->_item_model;
         }else{
             foreach( $this->_join_sources as $join ){
-                if( $input_target === $join["as"] ){
-                    return $join["model"];
+                if( $input_alias === $join["as"] ){
+                    return $join["join"];
+                }
+            }
+        }
+        return null;
+    }
+    public function get_alias_of_a_model( $model ){
+        if( $model === $this->_item_model ){
+            return $this->_table_alias;
+        }else{
+            foreach( $this->_join_sources as $join ){
+                if( $model === $join["join"] ){
+                    return $join["as"];
                 }
             }
         }
         return null;
     }
 
-    public function resolve_implicit_join( $join_source ){
-        if($join_source["model"] !== null
-                && $join_source["property"] === null ){
-            $models = $this->findPropertiesForAModel($join_source["model"]);
-            if( count($models) < 1 ){
-
-            }else{
-                $model = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
-                return $model;
-            }
-        }elseif($join_source["model"] === null
-                && $join_source["property"] !== null ){
-            $models = $this->findModelsForAProperty($join_source["property"]);
-            if( count($models) < 1 ){
-
-            }else{
-                $model = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
-                return $model;
-            }
+    public function normalizeInput( $input_target ){
+        $info = explode(".", $input_target);
+        if( trim($input_target) === "" ){
+            $retour = array(
+                "model"     =>null,
+                "property"  =>null,
+                "alias"     =>null,
+                "table"     =>null,
+                "as"        =>null,
+            );
         }else{
-            return $this->reversedTarget($join_source["model"], $join_source["property"]);
+            $info = explode(".", $input_target);
+            if( count($info) > 1 ){
+                $retour = array(
+                    "model"     =>$info[0],
+                    "property"  =>$info[1],
+                    "alias"     =>null,
+                    "table"     =>null,
+                    "as"        =>null,
+                );
+            }else{
+                $retour = array(
+                    "model"     =>$info[0],
+                    "property"  =>null,
+                    "alias"     =>null,
+                    "table"     =>null,
+                    "as"        =>null,
+                );
+            }
         }
+        return $retour;
+    }
+
+    public function getTypeOfAssociation($join_on_left, $join_on_right){
+        $retour = null;
+        if( $this->isHasOne($join_on_left["model"], $join_on_left["property"])
+            && $this->isHasMany($join_on_right["model"], $join_on_right["property"]) ){
+            $retour = "one_to_many";
+        }elseif( $this->isHasMany($join_on_left["model"], $join_on_left["property"])
+            && $this->isHasOne($join_on_right["model"], $join_on_right["property"]) ){
+            $retour = "many_to_one";
+        }elseif( $this->isHasManyToMany($join_on_left["model"], $join_on_left["property"])
+            && $this->isHasManyToMany($join_on_right["model"], $join_on_right["property"]) ){
+            $retour = "many_to_many";
+        }elseif( $this->isHasOne($join_on_left["model"], $join_on_left["property"])
+            && $this->isHasOne($join_on_right["model"], $join_on_right["property"]) ){
+            $retour = "one_to_one";
+        }
+        return $retour;
     }
 
     public function resolve_joins(){
-        foreach( $this->_join_sources as $join_source ){
-            $to_join_infos  = $join_source["join"];
-            $join_on_infos  = $join_source["on"];
+        $data_to_join   = array();
+        $alias_table    = array();
+        $alias_class    = array();
+        if( $this->_table_alias !== null ){
+            $alias_table[ $this->_table_alias ] = $this->_item_model;
+            $alias_class[ $this->_item_model ]  = $this->_table_alias;
+        }
 
-            $to_join_as         = $join_source["as"];
-            $join_type          = $join_source["type"];
-            $join_on_operator   = isset($join_on_infos["operator"])?$join_on_infos["operator"]:"on";
+        foreach( $this->_join_sources as $index=>$join_source ){
 
-            if( $join_on_infos === null ){
-                $to_join_ = $this->normalizeInputParameterTarget($to_join_infos);
-                $to_join = $this->resolve_implicit_join( $to_join_ );
-                $to_join["alias"]   = $to_join_["alias"];
-
-                $this->loadModelInfos ($to_join["model"]);
-
-                $join_on = array(   "model"     => $this->getClassTypeOfAProperty($to_join["model"], $to_join["property"]),
-                                    "property"  => $to_join_["property"],
-                                    "alias"     => $join_source["as"]);
-            }else{
-                $join_on = $this->normalizeInputParameterTarget($join_on_infos["left"]);
-                $to_join = $this->normalizeInputParameterTarget($to_join_infos);
-                $to_join["alias"]   = $to_join_as;
-                $this->loadModelInfos ($to_join["model"]);
+            $to_join = $this->normalizeInput($join_source["join"]);
+            // if is an alias -> resolve it !
+            $resolved_alias = $this->resolve_alias($to_join["model"]);
+            if( $resolved_alias !== null ){
+                $alias_table[ $to_join["model"] ]   = $resolved_alias;
+                $alias_class[ $resolved_alias ]     = $to_join["model"];
+                $to_join["alias"]  = $to_join["model"];
+                $to_join["model"]  = $resolved_alias;
             }
-            $this->loadModelInfos ($join_on["model"]);
 
-            if( $to_join["model"] === null ){
-                $join_on_right = $this->normalizeInputParameterTarget($join_on_infos["right"]);
+            if( $this->isAModel($to_join["model"]) === false ){
+                if( $to_join["property"] === null ){
+                    if( count($join_source["on"]) === 0 ){
+                        $models = $this->findModelsForAProperty($to_join["model"]);
+                        if( count($models) > 0 ){
+                            $property = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
 
-                $table_to_join = $to_join["table"];
-                $table_left    = $join_on["alias"]===null?$this->getTableOfAModel($join_on["model"]):$join_on["alias"];
-                $table_right   = $join_on_right["table"];
+                            $model_alias     = $this->get_alias_of_a_model($models[0]["model"]);
+                            if( $model_alias !== null ){
+                                $right = $model_alias.".".$models[0]["property"];
+                            }else{
+                                $right = $models[0]["model"].".".$models[0]["property"];
+                            }
 
-                $this->_builder->{$join_type}( $table_to_join, $to_join_as );
-                $this->_builder
-                    ->{$join_on_operator}(  $table_left.".".$join_on["property"],
-                    $table_right.".".$join_on_right["property"]
-                );
-
-            }elseif( $this->isHasMany($to_join["model"], $to_join["property"]) ){
-
-                if( $to_join["model"] === $join_on["model"] ){
-                    $is_reversed        = false;
-                    $to_join_           = $this->getTarget($to_join["model"], $to_join["property"]);
-                    $to_join_["alias"]  = $to_join["alias"];
-                    $to_join = $to_join_;
-                    $this->loadModelInfos ($to_join["model"]);
-                }else{
-                    $is_reversed    = true;
-                    $join_on_       = array(
-                        "model"     =>$to_join["model"],
-                        "property"  =>null,
-                        "alias"     =>$join_on["alias"],
-                    );
-
-                    $to_join_ = $this->getTarget($to_join["model"], $to_join["property"]);
-                    if( $join_on["property"] !== null )
-                        $to_join_["property"] = $join_on["property"];
-                    $to_join_["alias"] = $to_join["alias"];
-
-                    $join_on = $join_on_;
-                    $to_join = $to_join_;
-                    $this->loadModelInfos ($join_on["model"]);
-                }
-
-
-                if( $is_reversed === false ){
-                    $table_to_join  = $this->getTableOfAModel($to_join["model"]);
-                    $table_on       = $this->getTableOfAModel($join_on["model"]);
-
-                    $pk_table       = $join_on["alias"]===null?$table_on:$join_on["alias"];
-                    $fk_table       = $to_join["alias"]===null?$table_to_join:$to_join["alias"];
-
-                    $pks            = $this->getPksOfAModel($join_on["model"]);
-                    $fks            = $this->getFksOfAProperty($to_join["model"], $to_join["property"]);
-                }else{
-                    $table_on       = $this->getTableOfAModel($to_join["model"]);
-                    $table_to_join  = $this->getTableOfAModel($join_on["model"]);
-
-                    $pk_table       = $join_on["alias"]===null?$table_to_join:$join_on["alias"];
-                    $fk_table       = $to_join["alias"]===null?$table_on:$to_join["alias"];
-
-                    $pks            = $this->getPksOfAModel($join_on["model"]);
-                    $fks            = $this->getFksOfAProperty($to_join["model"], $to_join["property"]);
-                }
-
-                $this->_builder->{$join_type}( $table_to_join, $to_join_as );
-                foreach( $pks as $pk=>$info ){
-                    $this->_builder
-                            ->{$join_on_operator}(  $fk_table.".".$fks[$pk],
-                                                    $pk_table.".".$pk
-                                                    );
-                }
-
-            }elseif( $this->isHasOne($to_join["model"], $to_join["property"]) ){
-                $table_to_join  = $this->getTableOfAModel($to_join["model"]);
-                $table_on       = $this->getTableOfAModel($join_on["model"]);
-
-                $pk_table       = $join_on["alias"]===null?$table_on:$join_on["alias"];
-                $fk_table       = $to_join["alias"]===null?$table_to_join:$to_join["alias"];
-
-
-                $pks            = $this->getPksOfAModel($join_on["model"]);
-                $fks            = $this->getFksOfAProperty($to_join["model"], $to_join["property"]);
-
-                $this->_builder->{$join_type}( $table_to_join, $to_join_as );
-                foreach( $pks as $pk=>$infos ){
-                    $this->_builder
-                            ->{$join_on_operator}(  $fk_table.".".$fks[$pk],
-                                                    $pk_table.".".$pk
-                                                    );
-                }
-
-            }elseif( $this->isHasManyToMany($to_join["model"], $to_join["property"]) ){
-
-                $left_table_on          = $this->getTableOfAModel($to_join["model"]);
-                $middle_table_to_join   = $this->getMiddleTableOfAManyToMany($to_join["model"], $to_join["property"]);
-                $right_table_to_join    = $this->getTableOfAModel($join_on["model"]);
-
-
-                $left_table_keys        = $this->geLeftKeysOfManyToMany($to_join["model"], $to_join["property"]);
-                $right_table_keys       = $this->getRightKeysOfManyToMany($to_join["model"], $to_join["property"]);
-
-                // resolve with and shared_with infos
-                if( $this->_using_default_result_columns ){
-                    if( isset($this->_models_infos[$this->_item_model]["table_infos"]["rel_tables"][$middle_table_to_join]["shared_fields"]) ){
-                        $shared_fields = $this->_models_infos[$this->_item_model]["table_infos"]["rel_tables"][$middle_table_to_join]["shared_fields"];
-                        if( count($shared_fields) > 0 ){
-                            $this->select("$right_table_to_join.*", null);
+                            if( $join_source["as"] !== null ){
+                                $left = $join_source["as"].".".$property["property"];
+                            }else{
+                                $left = $property["model"].".".$property["property"];
+                            }
+                            $join_source["on"][] = array(
+                                "left"      =>$left,
+                                "operator"  =>"on",
+                                "right"     =>$right,
+                            );
+                            $to_join["model"]       = $property["model"];
+                            $to_join["property"]    = null;
+                        }else{
+                            // INCONNU !!!
                         }
-                        foreach( $shared_fields as $shared_field => $y ){
-                            $this->select($middle_table_to_join.".".$shared_field, null);
+                    }elseif( count($join_source["on"]) > 0 ){
+                        // c'est bizarre....
+                        if( $join_source["on"][0]["right"] !== null ){
+                            // c'est étrange !!!
+                            // let's assume this is a property
+                            $models = $this->findModelsForAProperty($to_join["model"]);
+                            if( count($models) > 0 ){
+                                $property               = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
+                                $to_join["model"]       = $property["model"];
+                                $to_join["property"]    = null;
+                            }else{
+                                // INCONNU !!!
+                            }
+                        }else{
+                            $models = $this->findModelsForAProperty($to_join["model"]);
+                            if( count($models) > 0 ){
+                                $property = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
+                                $join_source["on"][0]["right"] = $models[0]["model"].".".$models[0]["property"];
+                                $to_join["model"]       = $property["model"];
+                                $to_join["property"]    = null;
+                            }else{
+                                // INCONNU !!!
+                            }
                         }
                     }
-                }
-                // resolve with and shared_with infos
+                }else{
 
-                $this->_builder->inner_join( $middle_table_to_join );
-                foreach( $right_table_keys as $fk=>$pk ){
-                    $this->_builder
-                            ->{$join_on_operator}(  $right_table_to_join.".".$pk,
-                                                    $middle_table_to_join.".".$fk
-                                                    );
-                }
-                $this->_builder->{$join_type}( $left_table_on );
-                foreach( $left_table_keys as $fk=>$pk ){
-                    $this->_builder
-                            ->{$join_on_operator}(  $left_table_on.".".$pk,
-                                                    $middle_table_to_join.".".$fk
-                                                    );
-                }
+                    if( count($join_source["on"]) === 0 ){
+                        $property = $this->reversedTarget($to_join["model"], $to_join["property"]);
 
+                        if( $to_join["alias"] !== null ){
+                            $right = $to_join["alias"].".".$to_join["property"];
+                        }else{
+                            $right = $to_join["model"].".".$to_join["property"];
+                        }
+
+                        $join_source["on"][] = array(
+                            "left"      =>$property["model"].".".$property["property"],
+                            "operator"  =>"on",
+                            "right"     =>$right,
+                        );
+                        $to_join["model"]       = $property["model"];
+                        $to_join["property"]    = null;
+
+                    }elseif( count($join_source["on"]) > 0 ){
+                        /*
+                        // c'est bizarre....
+                        if( $join_source["on"][0]["right"] !== null ){
+                            // c'est étrange !!!
+                            // let's assume this is a property
+                            $models = $this->findModelsForAProperty($to_join["model"]);
+                            if( count($models) > 0 ){
+                                $property               = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
+                                $to_join["model"]       = $property["model"];
+                                $to_join["property"]    = null;
+                            }else{
+                                // INCONNU !!!
+                            }
+                        }else{
+                            $models = $this->findModelsForAProperty($to_join["model"]);
+                            if( count($models) > 0 ){
+                                $property = $this->reversedTarget($models[0]["model"], $models[0]["property"]);
+                                $join_source["on"][0]["right"] = $models[0]["model"].".".$models[0]["property"];
+                                $to_join["model"]       = $property["model"];
+                                $to_join["property"]    = null;
+                            }else{
+                                // INCONNU !!!
+                            }
+                        }*/
+                    }
+
+                }
+            }elseif($to_join["property"] !== null ){
+                $this->loadModelInfos($to_join["model"]);
+                if( $this->isHasOne($to_join["model"], $to_join["property"]) ){
+                    if( count($join_source["on"]) === 0 ){
+                        //-
+                        $right_join     = $this->getClassTypeOfAProperty($to_join["model"], $to_join["property"]);
+                        $left_join      = $to_join["model"].".".$to_join["property"];
+                        $to_join["model"]       = $right_join;
+                        $to_join["property"]    = null;
+                        $join_source["on"][] = array(
+                            "left"      =>$left_join,
+                            "operator"  =>"on",
+                            "right"     =>$right_join,
+                        );
+                    }
+                }else{
+                    $property = $this->reversedTarget($to_join["model"], $to_join["property"]);
+                    $to_join["model"]       = $property["model"];
+                    $to_join["property"]    = null;
+
+                }
+            }
+
+            if( $this->isAModel($to_join["model"]) ){
+                $this->loadModelInfos($to_join["model"]);
+                $to_join["as"]      = $join_source["as"];
+                $to_join["table"]   = $this->getTableOfAModel($to_join["model"]);
+            }else{
+                $to_join["as"]      = $join_source["as"];
+                $to_join["table"]   = $to_join["model"];
+            }
+
+            if( $to_join["as"] !== null ){
+                $alias_table[ $to_join["as"] ] = $to_join["model"];
+                $alias_class[ $to_join["model"] ] = $to_join["as"];
+            }
+
+            $curr_data_to_join  = array(
+                "join"  =>$to_join,
+                "on"    =>array(),
+                "type"  =>$join_source["type"],
+            );
+
+
+            if( count($join_source["on"]) > 0 ){
+                foreach( $join_source["on"] as $on ){
+                    $join_on_left   = $this->normalizeInput($on["left"]);
+
+                    if( isset($alias_table[ $join_on_left["model"] ]) ){
+                        $join_on_left["as"]     = $join_on_left["model"];
+                        $join_on_left["model"]  = $alias_table[ $join_on_left["model"] ];
+                    }elseif( isset($alias_class[ $join_on_left["model"] ]) ){
+                        $join_on_left["as"]    = $alias_class[ $join_on_left["model"] ];
+                    }
+                    /*
+                    $resolved_alias = $this->resolve_alias($join_on_left["model"]);
+                    if( $resolved_alias !== null ){
+                        $join_on_left["as"]     = $join_on_left["model"];
+                        $join_on_left["model"]  = $resolved_alias;
+                    }*/
+
+                    if( $this->isAModel($join_on_left["model"]) ){
+                        $join_on_left["table"]  = $this->getTableOfAModel($join_on_left["model"]);
+                    }else{
+                        $join_on_left["table"]  = $join_on_left["model"];
+                    }
+
+                    if( $join_on_left["property"] === null ){
+                        $r = $this->findPropertiesForAModel($to_join["model"]); // @todo to check because i think this is not sufficient
+                        $join_on_left["property"] = $r[0]["property"];
+                    }
+
+                    if( $on["right"] === null ){
+                        if( $this->isHasOne($join_on_left["model"], $join_on_left["property"]) ){
+                            $join_on_right              = array();
+                            $join_on_right["model"]     = $this->getClassTypeOfAProperty($join_on_left["model"], $join_on_left["property"]);
+                            $join_on_right["property"]  = null;
+                            $join_on_right["as"]        = null;
+
+                            if( isset($alias_class[ $join_on_right["model"] ]) ){
+                                $join_on_right["as"]     = $alias_class[ $join_on_right["model"] ];
+                            }
+                            $join_on_right["table"]  = $this->getTableOfAModel($join_on_right["model"]);
+                        }else{
+                            $join_on_right          = $this->reversedTarget($join_on_left["model"], $join_on_left["property"]);
+                            $join_on_right["as"]    = null;
+
+                            if( isset($alias_class[ $join_on_right["model"] ]) ){
+                                $join_on_right["as"]     = $alias_class[ $join_on_right["model"] ];
+                            }
+
+                            /*
+                            $resolved_alias         = $this->resolve_alias($join_on_right["model"]);
+                            if( $resolved_alias !== null ){
+                                $join_on_right["as"]     = $join_on_right["model"];
+                                $join_on_right["model"]  = $resolved_alias;
+                            }*/
+                            $join_on_right["table"]  = $this->getTableOfAModel($join_on_right["model"]);
+                        }
+
+                    }else{
+                        $join_on_right  = $this->normalizeInput($on["right"]);
+
+                        if( isset($alias_table[ $join_on_right["model"] ]) ){
+                            $join_on_right["as"]    = $join_on_right[ "model" ];
+                            $join_on_right["model"] = $alias_table[ $join_on_right["model"] ];
+                        }elseif( isset($alias_class[ $join_on_right["model"] ]) ){
+                            $join_on_right["as"]    = $alias_class[ $join_on_right["model"] ];
+                        }
+                        $this->loadModelInfos($join_on_right["model"]);
+                        /*
+                        $resolved_alias = $this->resolve_alias($join_on_right["model"]);
+                        if( $resolved_alias !== null ){
+                            $join_on_right["as"]     = $join_on_right["model"];
+                            $join_on_right["model"]  = $resolved_alias;
+                        }*/
+
+                        $join_on_right["table"]  = $this->getTableOfAModel($join_on_right["model"]);
+                    }
+
+                    if( $join_on_right["property"] === null ){
+                        if( $this->isHasOne($join_on_left["model"], $join_on_left["property"]) ){
+                            $assoc = "one_to_one";
+                        }elseif( $this->isHasMany($join_on_left["model"], $join_on_left["property"]) ){
+                            $assoc = "many_to_one";
+                        }elseif( $this->isHasManyToMany($join_on_left["model"], $join_on_left["property"]) ){
+                            $assoc = "many_to_many";
+                        }
+                    }else{
+                        $assoc = $this->getTypeOfAssociation($join_on_left, $join_on_right);
+                        if( $assoc === null ){
+                            $assoc = "raw";
+                            if( $this->isAModel($join_on_left["model"]) === false ){
+                                $join_on_left["table"] = $join_on_left["model"];
+                            }
+                            if( $this->isAModel($join_on_right["model"]) === false ){
+                                $join_on_right["table"] = $join_on_right["model"];
+                            }
+                        }
+                    }
+
+                    $curr_data_to_join["on"][] = array(
+                        "left"      =>$join_on_left,
+                        "right"     =>$join_on_right,
+                        "assoc"     =>$assoc,
+                        "operator"  =>$on["operator"],
+                        "keys"      => array(),
+                    );
+                }
+            }else{
+
+                if($to_join["model"] !== null && $to_join["property"] !== null ){
+                    //
+                    if( $this->isHasMany($to_join["model"], $to_join["property"]) ){
+                        $left_property  = $to_join;
+                        $right_property = $this->reversedTarget($left_property["model"], $left_property["property"]);
+                        $this->loadModelInfos($right_property["model"]);
+
+                        $left_property["table"]     = $this->getTableOfAModel($left_property["model"]);
+                        $left_property["as"]        = null;
+                        $left_property["alias"]     = null;
+                        if( isset($alias_class[ $left_property["model"] ]) ){
+                            $left_property["as"]     = $alias_class[ $left_property["model"] ];
+                        }
+
+                        $right_property["table"]    = $this->getTableOfAModel($right_property["model"]);
+                        $right_property["as"]       = null;
+                        $right_property["alias"]    = null;
+                        if( isset($alias_class[ $right_property["model"] ]) ){
+                            $right_property["as"]     = $alias_class[ $right_property["model"] ];
+                        }
+
+                        $curr_data_to_join["on"][] = array(
+                            "left"      =>$left_property,
+                            "right"     =>$right_property,
+                            "assoc"     =>$this->getTypeOfAssociation($left_property, $right_property),
+                            "operator"  =>"on",
+                            "keys"      => array(),
+                        );
+                    }elseif( $this->isHasManyToMany($to_join["model"], $to_join["property"]) ){
+                        $left_property  = $to_join;
+                        $right_property = $this->reversedTarget($left_property["model"], $left_property["property"]);
+                        $this->loadModelInfos($right_property["model"]);
+
+                        $left_property["table"]     = $this->getTableOfAModel($left_property["model"]);
+                        $left_property["as"]        = null;
+                        $left_property["alias"]     = null;
+                        if( isset($alias_class[ $left_property["model"] ]) ){
+                            $left_property["as"]     = $alias_class[ $left_property["model"] ];
+                        }
+
+                        $right_property["table"]    = $this->getTableOfAModel($right_property["model"]);
+                        $right_property["as"]       = null;
+                        $right_property["alias"]    = null;
+                        if( isset($alias_class[ $right_property["model"] ]) ){
+                            $right_property["as"]     = $alias_class[ $right_property["model"] ];
+                        }
+
+                        $curr_data_to_join["on"][] = array(
+                            "left"      =>$left_property,
+                            "right"     =>$right_property,
+                            "assoc"     =>"many_to_many",
+                            "operator"  =>"on",
+                            "keys"      => array(),
+                        );
+                    }
+
+
+
+                }elseif( $this->isAModel($to_join["model"]) ){
+                    $properties     = $this->findPropertiesForAModel($to_join["model"]);
+                    $left_property  = $properties[0];
+                    $right_property = $this->reversedTarget($left_property["model"], $left_property["property"]);
+
+                    $left_property["table"]     = $this->getTableOfAModel($left_property["model"]);
+                    $left_property["as"]        = null;
+                    $left_property["alias"]     = null;
+                    if( isset($alias_class[ $left_property["model"] ]) ){
+                        $left_property["as"]     = $alias_class[ $left_property["model"] ];
+                    }
+
+                    $right_property["table"]    = $this->getTableOfAModel($right_property["model"]);
+                    $right_property["as"]       = null;
+                    $right_property["alias"]    = null;
+                    if( isset($alias_class[ $right_property["model"] ]) ){
+                        $right_property["as"]     = $alias_class[ $right_property["model"] ];
+                    }
+
+                    $curr_data_to_join["on"][] = array(
+                        "left"      =>$left_property,
+                        "right"     =>$right_property,
+                        "assoc"     =>$this->getTypeOfAssociation($left_property, $right_property),
+                        "operator"  =>"on",
+                        "keys"      => array(),
+                    );
+                }else{
+                }
+            }
+            $data_to_join[] = $curr_data_to_join;
+        }
+
+        foreach( $data_to_join as $index =>$to_join ){
+            foreach( $to_join["on"] as $i => $on ){
+                if( $on["assoc"] === "one_to_many" ){
+                    $join_on_left   = $on["left"];
+                    $join_on_right  = $on["right"];
+
+                    $fks           = $this->getFksOfAProperty($join_on_left["model"], $join_on_left["property"]);
+                    $right_table   = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                    $left_table    = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+                    $keys_on = array();
+                    foreach( $fks as $left_key => $right_key )
+                        $keys_on[ $left_table.".".$left_key ] = $right_table.".".$right_key;
+
+                    $data_to_join[$index]["on"][$i]["keys"] = $keys_on;
+
+                }elseif( $on["assoc"] === "many_to_one" ){
+                    $join_on_left   = $on["left"];
+                    $join_on_right  = $on["right"];
+
+                    $fks            = $this->getFksOfAProperty($join_on_right["model"], $join_on_right["property"]);
+                    $left_table     = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                    $right_table    = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+                    $keys_on = array();
+                    foreach( $fks as $left_key => $right_key )
+                        $keys_on[ $left_table.".".$left_key ] = $right_table.".".$right_key;
+
+                    $data_to_join[$index]["on"][$i]["keys"] = $keys_on;
+
+                }elseif( $on["assoc"] === "many_to_many" ){
+                    $join_on_left   = $on["left"];
+                    $join_on_right  = $on["right"];
+                    $left_table     = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                    $right_table    = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+                    $middle_table   = $this->getMiddleTableOfAManyToMany($join_on_left["model"], $join_on_left["property"]);
+
+                    if( $to_join["join"]["model"] === $join_on_left["model"] ){
+                        $fks = $this->getLeftKeysOfManyToMany($join_on_right["model"], $join_on_right["property"]);
+                        $mid_keys_on = array();
+                        foreach( $fks as $left_key => $right_key )
+                            $mid_keys_on[ $middle_table.".".$left_key ] = $right_table.".".$right_key;
+
+
+                        $fks = $this->getLeftKeysOfManyToMany($join_on_left["model"], $join_on_left["property"]);
+                        $keys_on = array();
+                        foreach( $fks as $left_key => $right_key )
+                            $keys_on[ $middle_table.".".$left_key ] = $left_table.".".$right_key;
+                    }else{
+                        $fks = $this->getLeftKeysOfManyToMany($join_on_left["model"], $join_on_left["property"]);
+                        $mid_keys_on = array();
+                        foreach( $fks as $left_key => $right_key )
+                            $mid_keys_on[ $middle_table.".".$left_key ] = $left_table.".".$right_key;
+
+
+                        $fks = $this->getLeftKeysOfManyToMany($join_on_right["model"], $join_on_right["property"]);
+                        $keys_on = array();
+                        foreach( $fks as $left_key => $right_key )
+                            $keys_on[ $middle_table.".".$left_key ] = $right_table.".".$right_key;
+                    }
+
+                    /**
+                     * shared fields to select
+                     */
+                    if( isset($this->_models_infos[ $this->_item_model ]["table_infos"]["rel_tables"][$middle_table]["shared_fields"]) ){
+                        $shared_fields = $this->_models_infos[ $this->_item_model ]["table_infos"]["rel_tables"][$middle_table]["shared_fields"];
+                        if( count($shared_fields) > 0 ){
+                            if( $this->_using_default_result_columns ){
+                                $t = $this->getTableOfAModel($this->_item_model);
+                                $this->select($t.".*");
+                            }
+                            foreach( $shared_fields as $shared_field=>$s ){
+                                $this->select($middle_table.".".$shared_field);
+                            }
+                        }
+                    }
+                    /**
+                     * shared fields to select
+                     */
+
+
+                    $data_to_join[$index]["on"][$i]["keys"]         = $keys_on;
+                    $data_to_join[$index]["on"][$i]["middle"]       = $middle_table;
+                    $data_to_join[$index]["on"][$i]["middle_keys"]  = $mid_keys_on;
+
+                }elseif( $on["assoc"] === "one_to_one" ){
+                    $join_on_left   = $on["left"];
+                    $join_on_right  = $on["right"];
+
+                    if( $join_on_left["property"] !== null ){
+                        $fks = $this->getFksOfAProperty($join_on_left["model"], $join_on_left["property"]);
+                        $left_table     = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+                        $right_table    = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                    }elseif( $join_on_right["property"] !== null ){
+                        $fks = $this->getFksOfAProperty($join_on_right["model"], $join_on_right["property"]);
+                        $left_table     = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                        $right_table    = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+                    }else{
+
+                    }
+                    $keys_on = array();
+                    foreach( $fks as $left_key => $right_key )
+                        $keys_on[ $left_table.".".$left_key ] = $right_table.".".$right_key;
+
+                    $data_to_join[$index]["on"][$i]["keys"] = $keys_on;
+                }else{
+                    $join_on_left   = $on["left"];
+                    $join_on_right  = $on["right"];
+
+                    $left_table     = $join_on_left["as"]===null?$join_on_left["table"]:$join_on_left["as"];
+                    $right_table    = $join_on_right["as"]===null?$join_on_right["table"]:$join_on_right["as"];
+
+                    $keys_on = array();
+                    $keys_on[ $left_table.".".$join_on_left["property"] ] = $right_table.".".$join_on_right["property"];
+
+                    $data_to_join[$index]["on"][$i]["keys"] = $keys_on;
+                }
+            }
+        }
+
+
+        foreach ($data_to_join as $index=>$join) {
+            foreach( $join["on"] as $i=>$on ){
+                if( $i === 0 ){
+                    if( isset($on["middle"]) ){
+                        $this->_builder->inner_join( $on["middle"] );
+                        foreach( $on["middle_keys"] as $left => $right ){
+                            $this->_builder
+                                ->on_equal( $left, $right );
+                        }
+                    }
+                    $this->_builder->{$join["type"]}( $join["join"]["table"], $join["join"]["as"] );
+                }
+                foreach( $on["keys"] as $left => $right ){
+                    $this->_builder
+                        ->{$on["operator"]}( $left, $right );
+                }
             }
         }
     }

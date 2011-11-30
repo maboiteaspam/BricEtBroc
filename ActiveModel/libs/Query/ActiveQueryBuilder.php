@@ -1,12 +1,12 @@
 <?php
 
 class ActiveQueryBuilder{
-    
+
     // The name of the table the current ORM instance is associated with
     protected $_identifier_quote_character;
     protected $cmpl_callback;
     protected $exec_callback;
-    
+
     protected $query_builder;
 
     /**
@@ -77,26 +77,26 @@ class ActiveQueryBuilder{
 }
 
 class ActiveSelectBuilder{
-    
+
     /**
      *
-     * @var SelectBuilder 
+     * @var SelectBuilder
      */
     protected $_builder;
     protected $_values = array();
-    
+
     protected $exec_callback;
     protected $cmpl_callback;
-    
+
     public function __construct( SelectBuilder $builder ){
         $this->_builder = $builder;
     }
-    
+
     public function setCallback( $cmpl_callback, $exec_callback ){
         $this->cmpl_callback = $cmpl_callback;
         $this->exec_callback = $exec_callback;
     }
-    
+
     /**
      * Perform a raw query. The query should contain placeholders,
      * in either named or question mark style, and the parameters
@@ -238,8 +238,8 @@ class ActiveSelectBuilder{
         $this->_builder->on($col_left, "=", $col_right);
         return $this;
     }
-    public function on_egual($col_left, $col_right) {
-        $this->_builder->on_egual($col_left, $col_right);
+    public function on_equal($col_left, $col_right) {
+        $this->_builder->on_equal($col_left, $col_right);
         return $this;
     }
     public function on_not_equal($col_left, $col_right) {
@@ -531,18 +531,18 @@ class ActiveSelectBuilder{
         }
         $values     = array_reverse( $values );
         $marks_pos  = array_reverse( $marks_pos );
-        
+
         foreach( $marks_pos as $index=>$mark_pos ){
             $raw_query = substr_replace($raw_query, "'".  addslashes($values[$index])."'", $mark_pos, 1 );
         }
-        
+
         return $raw_query;
     }
 
     public function compile(){
         return call_user_func_array($this->cmpl_callback, array($this->build(), $this->_values));
     }
-    
+
     public function execute(){
         return call_user_func_array($this->exec_callback, array($this->compile(), $this->_values));
     }
@@ -552,18 +552,18 @@ class ActiveSelectBuilder{
 class ActiveInsertBuilder{
     /**
      *
-     * @var InsertBuilder 
+     * @var InsertBuilder
      */
     protected $_builder;
     protected $_values = array();
-    
+
     protected $exec_callback;
     protected $cmpl_callback;
-    
+
     public function __construct( InsertBuilder $builder ){
         $this->_builder = $builder;
     }
-    
+
     public function setCallback( $cmpl_callback, $exec_callback ){
         $this->cmpl_callback = $cmpl_callback;
         $this->exec_callback = $exec_callback;
@@ -595,18 +595,18 @@ class ActiveInsertBuilder{
         }
         $values     = array_reverse( $values );
         $marks_pos  = array_reverse( $marks_pos );
-        
+
         foreach( $marks_pos as $index=>$mark_pos ){
             $raw_query = substr_replace($raw_query, "'".  addslashes($values[$index])."'", $mark_pos, 1 );
         }
-        
+
         return $raw_query;
     }
 
     public function compile(){
         return call_user_func_array($this->cmpl_callback, array($this->build(), $this->_values));
     }
-    
+
     public function execute(){
         return call_user_func_array($this->exec_callback, array($this->compile(), $this->_values));
     }
@@ -615,7 +615,7 @@ class ActiveInsertBuilder{
 }
 
 class ActiveReplaceBuilder extends ActiveInsertBuilder{
-    
+
     public function __construct( ReplaceBuilder $builder ){
         $this->_builder = $builder;
     }
@@ -624,18 +624,18 @@ class ActiveReplaceBuilder extends ActiveInsertBuilder{
 class ActiveUpdateBuilder{
     /**
      *
-     * @var UpdateBuilder 
+     * @var UpdateBuilder
      */
     protected $_builder;
     protected $_values = array();
-    
+
     protected $exec_callback;
     protected $cmpl_callback;
-    
+
     public function __construct( UpdateBuilder $builder ){
         $this->_builder = $builder;
     }
-    
+
     public function setCallback( $cmpl_callback, $exec_callback ){
         $this->cmpl_callback = $cmpl_callback;
         $this->exec_callback = $exec_callback;
@@ -835,18 +835,18 @@ class ActiveUpdateBuilder{
         }
         $values     = array_reverse( $values );
         $marks_pos  = array_reverse( $marks_pos );
-        
+
         foreach( $marks_pos as $index=>$mark_pos ){
             $raw_query = substr_replace($raw_query, "'".  addslashes($values[$index])."'", $mark_pos, 1 );
         }
-        
+
         return $raw_query;
     }
 
     public function compile(){
         return call_user_func_array($this->cmpl_callback, array($this->build(), $this->_values));
     }
-    
+
     public function execute(){
         return call_user_func_array($this->exec_callback, array($this->compile(), $this->_values));
     }
@@ -855,23 +855,23 @@ class ActiveUpdateBuilder{
 class ActiveDeleteBuilder{
     /**
      *
-     * @var DeleteBuilder 
+     * @var DeleteBuilder
      */
     protected $_builder;
     protected $_values = array();
-    
+
     protected $exec_callback;
     protected $cmpl_callback;
-    
+
     public function __construct( DeleteBuilder $builder ){
         $this->_builder = $builder;
     }
-    
+
     public function setCallback( $cmpl_callback, $exec_callback ){
         $this->cmpl_callback = $cmpl_callback;
         $this->exec_callback = $exec_callback;
     }
-    
+
 
     /**
      * Perform a raw query. The query should contain placeholders,
@@ -1056,17 +1056,17 @@ class ActiveDeleteBuilder{
         }
         $values     = array_reverse( $values );
         $marks_pos  = array_reverse( $marks_pos );
-        
+
         foreach( $marks_pos as $index=>$mark_pos ){
             $raw_query = substr_replace($raw_query, "'".  addslashes($values[$index])."'", $mark_pos, 1 );
         }
-        
+
         return $raw_query;
     }
     public function compile(){
         return call_user_func_array($this->cmpl_callback, array($this->build(), $this->_values));
     }
-    
+
     public function execute(){
         return call_user_func_array($this->exec_callback, array($this->compile(), $this->_values));
     }
