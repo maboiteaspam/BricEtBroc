@@ -1,7 +1,7 @@
 <?php
 /**
  * Super Closure Class
- * 
+ *
  * The SuperClosure class encapsulates a PHP Closure and adds new capabilities
  * like serialization and code retrieval. It uses the ReflectionFunction class
  * heavily to acquire information about the closure.
@@ -15,6 +15,7 @@ class SuperClosure {
 	protected $code = NULL;
 	protected $used_variables = array();
 	protected $to_unserialize = array();
+	protected $start_line = array();
 
 
 	public function __construct($function)
@@ -26,10 +27,15 @@ class SuperClosure {
 		// Set the member variable values
 		$this->closure          = $function;
 		$this->reflection       = new ReflectionFunction($function);
+		$this->start_line       = $this->reflection->getStartLine();
 		$this->code             = $this->_fetchCode();
 		$this->used_variables   = $this->_fetchUsedVariables();
 		$this->to_unserialize   = $this->_fetchUnserializable();
 	}
+
+    public function startLine(){
+        return $this->start_line;
+    }
 
 
 	public function __invoke()
@@ -94,7 +100,7 @@ class SuperClosure {
 
 		// Get the static variables of the function via reflection
 		$static_vars = $this->reflection->getStaticVariables();
-		
+
 		// Only keep the variables that appeared in both sets
 		$used_vars = array();
 		foreach ($vars as $var)
@@ -106,7 +112,7 @@ class SuperClosure {
 
 		return $used_vars;
 	}
-    
+
 
 	protected function _fetchUnserializable()
 	{
