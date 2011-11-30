@@ -18,6 +18,6 @@ foreach( scandir($current_dir) as $f ){
             <a href="<?php echo $dir; ?>/" target="results"><?php echo ucfirst(str_replace("_", " ", $dir)); ?></a><br/>
         <?php } ?>
     </div>
-    <iframe name="results" style="float: left; width: 1050px; height: 100%; border-width: 0px; border-style: solid; border-left-width: 1px;"></iframe>
+    <iframe name="results" style="float: left; width: 1250px; height: 100%; border-width: 0px; border-style: solid; border-left-width: 1px;"></iframe>
 </body>
 </html>

@@ -17,19 +17,29 @@ for( $i=0; $i<1;$i++){
     foreach( $tests_suite as $test_index=>$test_case ){
 
         $test_func          = $test_case[0];
-        $test_result        = $test_func();
-        $expected_result    = $test_case[1];
+        try{
+            ob_start();
+            $test_result        = $test_func();
+            $expected_result    = $test_case[1];
+            $test_print = trim(ob_get_clean());
 
-        if( $test_suite_tester($test_func, $test_result, $expected_result) ){
-            if( $print_success ){
-                $test_suite_succeed($test_index, $test_func, $test_result, $expected_result);
-                new_line(2);
+            if( $test_suite_tester($test_func, $test_result, $expected_result) ){
+                if( $print_success ){
+                    $test_suite_succeed($test_index, $test_func, $test_result, $expected_result);
+                    if( $test_print !== "" ) new_line(2);
+
+                }
+            }else{
+                $test_suite_failed($test_index, $test_func, $test_result, $expected_result);
+                $number_of_failed_request++;
+                if( $test_print !== "" ) new_line(2);
             }
-        }else{
-            $test_suite_failed($test_index, $test_func, $test_result, $expected_result);
+        }catch(InvalidBuildException $ex ){
+            $test_suite_failed($test_index, $test_func, $ex->getMessage(), $expected_result);
             $number_of_failed_request++;
-            new_line(2);
+            if( $test_print !== "" ) new_line(2);
         }
+        if( $test_print !== "" ) new_line(1);
         $number_of_builded_request++;
     }
 }
