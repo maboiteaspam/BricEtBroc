@@ -95,9 +95,10 @@ duration_recorder::inst()->add_checkpoint("global");
 /**
  * Init some values
  */
-echo( convert(memory_get_usage(true)) );
 new_line(1);
-echo( convert(memory_get_peak_usage(true)) );
+echo "Memory usage : ".( convert(memory_get_usage(true)) );
+new_line(1);
+echo "Peak memory usage : ".( convert(memory_get_peak_usage(true)) );
 new_line(1);
 
 /**
@@ -109,9 +110,10 @@ include("../../libs/__include_files.php");
 /**
  * display some infos about memory
  */
-echo( convert(memory_get_usage(true)) );
 new_line(1);
-echo( convert(memory_get_peak_usage(true)) );
+echo "Memory usage : ".( convert(memory_get_usage(true)) );
+new_line(1);
+echo "Peak memory usage : ".( convert(memory_get_peak_usage(true)) );
 new_line(1);
 
 
@@ -172,16 +174,16 @@ $ActiveModelController->setModeler($Modeler);
 
 /**
  * Define a query builder to work with
- * 
+ *
  * The QueryBuilder is responsible to produce only SQL
- * 
+ *
  * The ActiveQueryBuilder is responsible to take input
  *  values and bind them to SQL query, hardly depends of your db layer (pdo / mysql etc)
- * 
+ *
  * The ActiveModelQueryBuilder is responsible to help you
  *  to work with objects relationships, it does implements helper to
  *  simplify your day to day work against your model
- * 
+ *
  */
 $query_builder = new QueryBuilder();
 $query_builder->set_identifier_quote_character("`");
@@ -193,10 +195,10 @@ $active_query_builder = new ActiveQueryBuilder($query_builder);
  * You may use different db layer like mysql etc
  */
 $active_query_builder->setCallback( function($sql, $values) use($pdo)
-                                        {return $pdo->prepare($sql);}, 
+                                        {return $pdo->prepare($sql);},
                                     function($stmt, $values) use($pdo)
                                         {$stmt->execute($values); return $stmt->fetchAll(PDO::FETCH_ASSOC);});
-                                        
+
 $active_model_query_builder = new ActiveModelQueryBuilder( $active_query_builder );
 
 /**
@@ -206,5 +208,10 @@ $ActiveModelController->setModelQueryBuilder($active_model_query_builder);
 
 
 
-new_line(5);
+new_line(1);
+echo "Memory usage : ".( convert(memory_get_usage(true)) );
+new_line(1);
+echo "Peak memory usage : ".( convert(memory_get_peak_usage(true)) );
+new_line(1);
+new_line(2);
 
