@@ -1352,6 +1352,18 @@ class ActiveModelSelectBuilder{
 
     }
 
+    public function resolve_order_by(){
+        foreach( $this->_order_by as $o ){
+            $this->_builder->order_by_asc($o["column"],$o["direction"]);
+        }
+    }
+
+    public function resolve_group_by(){
+        foreach( $this->_group_by as $o ){
+            $this->_builder->group_by($o);
+        }
+    }
+
     public function build(){
         $table_name     = $this->_models_infos[$this->_item_model]["table_infos"]["table"]["name"];
 
@@ -1361,6 +1373,9 @@ class ActiveModelSelectBuilder{
 
         $this->resolve_joins();
         $this->resolve_wheres();
+        $this->resolve_order_by();
+        $this->resolve_group_by();
+
         if( ! $this->_using_default_result_columns ){
             foreach( $this->_result_columns as $i => $res ){
                 if( $res["type"] === "column" ){
@@ -1374,16 +1389,8 @@ class ActiveModelSelectBuilder{
         }
 
         $this->_builder->limit($this->_limit);
-
         $this->_builder->offset($this->_offset);
 
-        foreach( $this->_order_by as $o ){
-            $this->_builder->order_by_asc($o["column"],$o["direction"]);
-        }
-
-        foreach( $this->_group_by as $o ){
-            $this->_builder->group_by($o);
-        }
 
         $retour = $this->_builder->build();
         return $retour;
