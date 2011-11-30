@@ -64,11 +64,16 @@ class ActiveModelQueryBuilder {
     }
 }
 
+
+class InvalidBuildException extends Exception{
+
+}
+
 class ActiveModelSelectBuilder{
 
     /**
      *
-     * @var SelectBuilder
+     * @var ActiveSelectBuilder
      */
     protected $_builder;
     protected $_active_query_builder;
@@ -763,8 +768,11 @@ class ActiveModelSelectBuilder{
         $retour = array();
         foreach( $this->_models_infos as $model_name => $model_infos ){
             if( isset($model_infos["model_infos"]["virutal_prop_infos"][$searched_property_name]) ){
-                $retour[] = array(  "model"=>$model_name,
-                                    "property"=>$searched_property_name);
+                $retour[] = array(  "model"     =>$model_name,
+                    "property"  =>$searched_property_name);
+            }elseif( isset($model_infos["model_infos"]["getters"][$searched_property_name]) ){
+                $retour[] = array(  "model"     =>$model_name,
+                                    "property"  =>$searched_property_name);
             }
         }
         return $retour;
@@ -983,11 +991,17 @@ class ActiveModelSelectBuilder{
                             "right"     =>$right_join,
                         );
                     }
-                }else{
+                }elseif(  $this->isHasMany($to_join["model"], $to_join["property"]) ){
                     $property = $this->reversedTarget($to_join["model"], $to_join["property"]);
                     $to_join["model"]       = $property["model"];
                     $to_join["property"]    = null;
 
+                }elseif(  $this->isHasManyToMany($to_join["model"], $to_join["property"]) ){
+                    $property = $this->reversedTarget($to_join["model"], $to_join["property"]);
+                    $to_join["model"]       = $property["model"];
+                    $to_join["property"]    = null;
+
+                }else{
                 }
             }
 
@@ -1173,6 +1187,8 @@ class ActiveModelSelectBuilder{
                             "operator"  =>"on",
                             "keys"      => array(),
                         );
+                    }else{
+                        throw new InvalidBuildException("Unknown property {$to_join["property"]} on model {$to_join["model"]}");
                     }
 
 
@@ -1349,7 +1365,27 @@ class ActiveModelSelectBuilder{
     }
 
     public function resolve_wheres(){
+        foreach( $this->_where_conditions as $index => $where_condition ){
+            $r = $this->normalizeInput($where_condition["what"]);
+            if( $r["property"] === null ){
+                if( $this->isAModel($r["model"]) === false ){
+                    $r["property"]  = $r["model"];
+                    $r["model"]     = null;
+                    $properties = $this->findModelsForAProperty($r["property"]);
+                    if( count($properties) > 0 ){
+                        $r["model"] = $properties[0]["model"];
+                    }else{
+                        //-
+                    }
+                }
+            }
 
+            if( $this->isAModel($r["model"]) ){
+                $r["table"] = $this->getTableOfAModel($r["model"]);
+            }
+
+            $this->_builder->{$where_condition["operator"]}($r["table"].".".$r["property"], $where_condition["value"]);
+        }
     }
 
     public function resolve_order_by(){
@@ -1397,10 +1433,12 @@ class ActiveModelSelectBuilder{
     }
 
     public function _print(){
+        $this->build();
         return $this->_builder->_print();
     }
 
     public function compile(){
+        $this->build();
         return $this->_builder->compile();
     }
 
